@@ -12,6 +12,14 @@ relations:
     weight: 5
     evidence: "resmi_tutanak"
     direction: "directed"
+
+  - targets:
+      - "mehmet-oz"
+      - "z-bankasi"
+    type: "yatirimci"
+    weight: 1
+    evidence: "belgeli"
+    edge_color: "#3b82f6"
 ---
 
 ## Biyografi
