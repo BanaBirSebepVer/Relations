@@ -9,7 +9,7 @@ url: ""
 collections:
   nodes:
     output: true
-    permalink: /nodes/:path/
+    permalink: /:slug/
 
 # Markdown Ayarları
 markdown: kramdown
