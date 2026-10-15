@@ -227,3 +227,166 @@ body, html {
 .contributor-item:hover .contributor-avatar {
   border-color: #38bdf8;
 }
+
+
+/* --- Mevcut stillerinizin devamına ekleyin --- */
+
+/* Google Translate Çerçeve Gizleme */
+.goog-te-banner-frame.skiptranslate { display: none !important; }
+body { top: 0px !important; }
+#google_translate_element { display: none !important; }
+
+/* Yeni Dil Seçici Stili */
+#lang-switcher {
+  background: #0b1120;
+  border: 1px solid #334155;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+}
+#lang-switcher:focus {
+  border-color: #38bdf8;
+}
+
+/* Forks (Topluluk Ağları) Sayfası Özel Stilleri */
+body.forks-page {
+  background-color: #0b1120;
+  color: #cbd5e1;
+  font-family: system-ui, -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto !important;
+}
+
+.forks-container {
+  max-width: 1000px;
+  margin: 60px auto;
+  padding: 0 24px;
+}
+
+.header-box {
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 24px;
+  margin-bottom: 32px;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.header-box h1 {
+  font-size: 32px;
+  color: #f8fafc;
+  margin: 0 0 8px 0;
+}
+
+.header-box p {
+  color: #94a3b8;
+  margin: 0;
+  font-size: 15px;
+}
+
+.forks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.fork-card {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.fork-card:hover {
+  transform: translateY(-3px);
+  border-color: #38bdf8;
+}
+
+.fork-owner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.fork-owner img {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 2px solid #0f172a;
+}
+
+.fork-owner-info h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #f8fafc;
+  word-break: break-all;
+}
+
+.fork-owner-info span {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.fork-desc {
+  font-size: 13.5px;
+  color: #cbd5e1;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+.fork-meta {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 16px;
+  display: flex;
+  gap: 16px;
+}
+
+.fork-actions {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #334155;
+  padding-top: 14px;
+}
+
+.btn-link {
+  flex: 1;
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: opacity 0.2s;
+}
+
+.btn-repo {
+  background: #0f172a;
+  color: #e2e8f0;
+  border: 1px solid #334155;
+}
+
+.btn-live {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+.btn-link:hover {
+  opacity: 0.9;
+}
