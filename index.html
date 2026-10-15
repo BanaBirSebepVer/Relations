@@ -18,6 +18,28 @@ layout: null
 
   <!-- Göreceli CSS Yolu -->
   <link rel="stylesheet" href="./assets/css/style.css">
+
+  <style>
+    /* Google Translate'in sayfa düzenini bozmasını ve sinir bozucu üst banner'ı açmasını engeller */
+    .goog-te-banner-frame.skiptranslate { display: none !important; }
+    body { top: 0px !important; }
+    #google_translate_element { display: none !important; }
+    
+    /* Yeni Dil Seçici Stili */
+    #lang-switcher {
+      background: #0b1120;
+      border: 1px solid #334155;
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+    }
+    #lang-switcher:focus {
+      border-color: #38bdf8;
+    }
+  </style>
 </head>
 <body>
 
@@ -32,6 +54,16 @@ layout: null
       <select id="type-filter">
         <option value="ALL">Tüm Tipler</option>
       </select>
+      
+      <!-- Çoklu Dil Seçici -->
+      <select id="lang-switcher">
+        <option value="tr">🇹🇷 TR</option>
+        <option value="en">🇬🇧 EN</option>
+        <option value="fr">🇫🇷 FR</option>
+        <option value="de">🇩🇪 DE</option>
+        <option value="ru">🇷🇺 RU</option>
+      </select>
+
       <button id="reset-view-btn">Merkeze Al</button>
     </div>
   </header>
@@ -68,5 +100,44 @@ layout: null
   </script>
   <script src="./assets/js/contributors.js"></script>
   <script src="./assets/js/app.js"></script>
+
+  <!-- ========================================== -->
+  <!-- GOOGLE TRANSLATE ENTEGRASYONU -->
+  <!-- ========================================== -->
+  <div id="google_translate_element"></div>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'tr', // Sitenin ana dili
+        autoDisplay: false
+      }, 'google_translate_element');
+
+      // Özel menümüz ile Google Çeviri menüsünü birbirine bağlıyoruz
+      setTimeout(function() {
+        var langSelect = document.getElementById('lang-switcher');
+        langSelect.addEventListener('change', function(e) {
+          var targetLang = e.target.value;
+          var googleCombo = document.querySelector(".goog-te-combo");
+          
+          if (googleCombo) {
+            googleCombo.value = targetLang;
+            // Google script'inin değişikliği algılaması için olayı tetikliyoruz
+            if (document.createEvent) {
+              var event = document.createEvent('HTMLEvents');
+              event.initEvent('change', true, true);
+              googleCombo.dispatchEvent(event);
+            } else {
+              var event = document.createEventObject();
+              event.eventType = 'change';
+              googleCombo.fireEvent('on' + event.eventType, event);
+            }
+          }
+        });
+      }, 1000); // Google bileşeninin DOM'a yüklenmesi için ufak bir gecikme
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+
 </body>
 </html>

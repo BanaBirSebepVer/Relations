@@ -1,24 +1,28 @@
 title: "Araştırmacı İlişki Ağı"
 description: "Açık Kaynak İlişki ve Ağ Haritalama Platformu"
-# Repo adınız ne ise başına slash koyarak yazın (örn: "/relations")
-# Eğer 'username.github.io' şeklindeki ana repoysa tırnak içini boş bırakın: ""
 baseurl: "/relations"
 url: ""
 
-# Koleksiyon Tanımlamaları
+# Koleksiyon Yapılandırması
 collections:
   nodes:
     output: true
-    permalink: /:slug/
+    permalink: /nodes/:slug/   # Sayfaları root yerine /nodes/ dizini altında toparlar
+
+# Varsayılan Şablon Atamaları (404 Hatasını Çözen Kısım)
+defaults:
+  - scope:
+      path: ""
+      type: "nodes"            # Sadece nodes koleksiyonuna etki eder
+    values:
+      layout: "default"        # Tümüne otomatik olarak _layouts/default.html şablonunu uygular
 
 # Markdown Ayarları
 markdown: kramdown
 kramdown:
   input: GFM
   hard_wrap: false
-  syntax_highlighter: rouge
 
-# Dahil Edilecek ve Hariç Tutulacak Dosyalar
 include:
   - api
 
