@@ -1,0 +1,35 @@
+# ==========================================
+# GRAFİK VE ARAYÜZ AYARLARI
+# ==========================================
+
+# Ağ Fizik ve Yerleşim Parametreleri
+layout:
+  name: "fcose"           # "fcose" veya "cose"
+  node_repulsion: 4500    # Düğümlerin birbirini itme gücü (dağılma mesafesi)
+  ideal_edge_length: 100  # Bağlantı çizgilerinin ideal uzunluğu
+  gravity: 0.25           # Merkeze çekim kuvveti
+
+# Düğüm Varsayılanları
+nodes:
+  default_color: "#0284c7"
+  border_color: "#0f172a"
+  ghost_color: "#475569"  # Henüz dosyası olmayan taslak düğümlerin rengi
+  min_size: 32            # En az bağlantısı olanın boyutu
+  max_size: 84            # En çok bağlantısı olanın tavan boyutu
+  fixed_size: 36          # size_mode: fixed olanların boyutu
+
+# Bağlantı (Edge) Varsayılanları
+edges:
+  default_color: "#64748b"
+  highlight_color: "#38bdf8"
+  min_width: 1
+  max_width: 6
+
+# Kategori (Type) Bazlı Renk Eşleşmeleri
+# (Front-matter'da özel HEX kodu belirtilmediğinde devreye girer)
+type_colors:
+  person: "#d97706"       # Kişiler için turuncu/kehribar
+  fund: "#2563eb"         # Fonlar için mavi
+  organization: "#9333ea" # Kurumlar için mor
+  event: "#dc2626"        # Olaylar için kırmızı
+  taslak: "#475569"       # Hayalet düğümler için gri

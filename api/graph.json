@@ -3,16 +3,18 @@ layout: null
 permalink: /api/graph.json
 ---
 {% assign all_nodes = site.nodes %}
+{% assign settings = site.data.settings %}
 {
+  "settings": {{ settings | jsonify }},
   "nodes": [
     {% for node in all_nodes %}
       {
         "data": {
-          "id": {{ node.id | jsonify }},
+          "id": {{ node.id | default: node.slug | jsonify }},
           "label": {{ node.title | default: node.id | jsonify }},
           "type": {{ node.type | default: "generic" | jsonify }},
-          "color": {{ node.color | jsonify }},
-          "image": {{ node.image | jsonify }},
+          "color": {{ node.color | default: "" | jsonify }},
+          "image": {{ node.image | default: "" | jsonify }},
           "size_mode": {{ node.size_mode | default: "auto" | jsonify }},
           "url": {{ node.url | relative_url | jsonify }},
           "content": {{ node.content | jsonify }}
@@ -21,38 +23,50 @@ permalink: /api/graph.json
     {% endfor %}
   ],
   "edges": [
-    {% assign edge_index = 0 %}
+    {% assign edge_list = "" | split: "" %}
     {% for node in all_nodes %}
       {% if node.relations %}
         {% for rel in node.relations %}
           {% if rel.targets %}
-            {% assign target_list = rel.targets %}
+            {% for t in rel.targets %}
+              {% capture edge_item %}
+                {
+                  "data": {
+                    "source": {{ node.id | default: node.slug | jsonify }},
+                    "target": {{ t | jsonify }},
+                    "label": {{ rel.type | default: "" | jsonify }},
+                    "weight": {{ rel.weight | default: 1 | jsonify }},
+                    "evidence": {{ rel.evidence | default: "belgeli" | jsonify }},
+                    "direction": {{ rel.direction | default: "auto" | jsonify }},
+                    "edge_color": {{ rel.edge_color | default: "" | jsonify }},
+                    "start_date": {{ rel.start_date | default: "" | jsonify }},
+                    "end_date": {{ rel.end_date | default: "" | jsonify }}
+                  }
+                }
+              {% endcapture %}
+              {% assign edge_list = edge_list | push: edge_item %}
+            {% endfor %}
           {% elsif rel.target %}
-            {% assign target_list = rel.target | split: "___CUSTOM_DELIM___" %}
-          {% else %}
-            {% assign target_list = "" | split: "" %}
-          {% endif %}
-
-          {% for t in target_list %}
-            {% if edge_index > 0 %},{% endif %}
-            {
-              "data": {
-                "id": "e_{{ node.id }}_{{ t }}_{{ edge_index }}",
-                "source": {{ node.id | jsonify }},
-                "target": {{ t | jsonify }},
-                "label": {{ rel.type | default: "" | jsonify }},
-                "weight": {{ rel.weight | default: 1 | jsonify }},
-                "evidence": {{ rel.evidence | default: "belgeli" | jsonify }},
-                "direction": {{ rel.direction | default: "auto" | jsonify }},
-                "edge_color": {{ rel.edge_color | jsonify }},
-                "start_date": {{ rel.start_date | jsonify }},
-                "end_date": {{ rel.end_date | jsonify }}
+            {% capture edge_item %}
+              {
+                "data": {
+                  "source": {{ node.id | default: node.slug | jsonify }},
+                  "target": {{ rel.target | jsonify }},
+                  "label": {{ rel.type | default: "" | jsonify }},
+                  "weight": {{ rel.weight | default: 1 | jsonify }},
+                  "evidence": {{ rel.evidence | default: "belgeli" | jsonify }},
+                  "direction": {{ rel.direction | default: "auto" | jsonify }},
+                  "edge_color": {{ rel.edge_color | default: "" | jsonify }},
+                  "start_date": {{ rel.start_date | default: "" | jsonify }},
+                  "end_date": {{ rel.end_date | default: "" | jsonify }}
+                }
               }
-            }
-            {% assign edge_index = edge_index | plus: 1 %}
-          {% endfor %}
+            {% endcapture %}
+            {% assign edge_list = edge_list | push: edge_item %}
+          {% endif %}
         {% endfor %}
       {% endif %}
     {% endfor %}
+    {{ edge_list | join: "," }}
   ]
 }
