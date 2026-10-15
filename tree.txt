@@ -1,15 +1,27 @@
+.
+├── CONTRIBUTING.md
+├── Gemfile
+├── README.md
 ├── _config.yml
-├── _nodes/
-│   ├── funds/
-│   │   └── x-fonu.md
-│   └── people/
-│       └── fatma-yilmaz.md
+├── _data
+│   └── settings.yml
+├── _layouts
+│   └── default.html
+├── _nodes
+│   ├── funds
+│   │   └── x-fonu.md
+│   └── people
+│       └── fatma-yilmaz.md
+├── api
+│   └── graph.json
+├── assets
+│   ├── css
+│   │   └── style.css
+│   └── js
+│       ├── app.js
+│       └── contributors.js
 ├── index.html
-├── api/
-│   └── graph.json
-└── assets/
-    ├── css/
-    │   └── style.css
-    └── js/
-        ├── app.js
-        └── contributors.js
+├── template.md
+└── tree.txt
+
+10 directories, 15 files
