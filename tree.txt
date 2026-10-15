@@ -12,6 +12,9 @@
 │   │   └── x-fonu.md
 │   └── people
 │       └── fatma-yilmaz.md
+├── _posts
+│   └── 2026-10-15-fatma-yilmaz-yeni-fon-acikladi.md
+├── _sites
 ├── api
 │   └── graph.json
 ├── assets
@@ -24,4 +27,4 @@
 ├── template.md
 └── tree.txt
 
-10 directories, 15 files
+12 directories, 16 files
