@@ -13,7 +13,7 @@ Bu depo, karmaşık kişi, kurum ve olay ilişkilerini Markdown dosyaları üzer
 
 ```bash
 # Depoyu klonlayın
-git clone [https://github.com/KULLANICI_ADI/REPO_ADI.git](https://github.com/KULLANICI_ADI/REPO_ADI.git)
+git clone [https://github.com/BanaBirSebepVer/Relations.git](https://github.com/BanaBirSebepVer/Relations.git)
 cd REPO_ADI
 
 # Bağımlılıkları yükleyin
