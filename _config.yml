@@ -1,20 +1,21 @@
 title: "Araştırmacı İlişki Ağı"
 description: "Açık Kaynak İlişki ve Ağ Haritalama Platformu"
 baseurl: "/relations"
-url: ""
+url: "https://banabirsebepver.github.io"
 
 # Koleksiyon Yapılandırması
 collections:
   nodes:
     output: true
-    permalink: /:slug/   # /nodes/ kısmını kaldırdık, adresler doğrudan kök dizinde olacak
+    permalink: /:name/       # DİKKAT: Koleksiyonlarda :slug çalışmaz, :name ZORUNLUDUR!
 
-# Varsayılan Şablon Atamaları (404'ü Çözen Güncelleme)
+# Varsayılan Şablon Atamaları
 defaults:
   - scope:
-      path: "_nodes"           # "type: nodes" yerine doğrudan klasör yolunu hedefledik
+      path: ""               # Tüm klasörleri kapsar
+      type: "nodes"          # Sadece nodes koleksiyonuna uygular
     values:
-      layout: "default"        # _nodes içindeki her dosyaya şablon uygulanmasını garanti eder
+      layout: "default"      # _layouts/default.html şablonunu giydirir
 
 # Markdown Ayarları
 markdown: kramdown
