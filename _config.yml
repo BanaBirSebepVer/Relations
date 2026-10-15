@@ -7,15 +7,14 @@ url: ""
 collections:
   nodes:
     output: true
-    permalink: /:slug/   # Sayfaları root yerine /nodes/ dizini altında toparlar
+    permalink: /:slug/   # /nodes/ kısmını kaldırdık, adresler doğrudan kök dizinde olacak
 
-# Varsayılan Şablon Atamaları (404 Hatasını Çözen Kısım)
+# Varsayılan Şablon Atamaları (404'ü Çözen Güncelleme)
 defaults:
   - scope:
-      path: ""
-      type: "nodes"            # Sadece nodes koleksiyonuna etki eder
+      path: "_nodes"           # "type: nodes" yerine doğrudan klasör yolunu hedefledik
     values:
-      layout: "default"        # Tümüne otomatik olarak _layouts/default.html şablonunu uygular
+      layout: "default"        # _nodes içindeki her dosyaya şablon uygulanmasını garanti eder
 
 # Markdown Ayarları
 markdown: kramdown
