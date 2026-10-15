@@ -16,7 +16,8 @@ layout: null
   <script src="https://cdn.jsdelivr.net/npm/cose-base/cose-base.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-fcose/cytoscape-fcose.js"></script>
 
-  <link rel="stylesheet" href="{{ site.baseurl }}/assets/css/style.css">
+  <!-- Göreceli CSS Yolu -->
+  <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
 
@@ -60,12 +61,12 @@ layout: null
     <div id="contributors-list"></div>
   </footer>
 
-  <!-- Scriptler -->
+  <!-- Göreceli JS ve Veri Yolları -->
   <script>
-    window.GRAPH_DATA_URL = "{{ site.baseurl }}/api/graph.json";
+    window.GRAPH_DATA_URL = "./api/graph.json";
     window.GITHUB_REPO = ""; 
   </script>
-  <script src="{{ site.baseurl }}/assets/js/contributors.js"></script>
-  <script src="{{ site.baseurl }}/assets/js/app.js"></script>
+  <script src="./assets/js/contributors.js"></script>
+  <script src="./assets/js/app.js"></script>
 </body>
 </html>
