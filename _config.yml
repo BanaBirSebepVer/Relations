@@ -7,7 +7,7 @@ url: ""
 collections:
   nodes:
     output: true
-    permalink: /nodes/:slug/   # Sayfaları root yerine /nodes/ dizini altında toparlar
+    permalink: /:slug/   # Sayfaları root yerine /nodes/ dizini altında toparlar
 
 # Varsayılan Şablon Atamaları (404 Hatasını Çözen Kısım)
 defaults:
