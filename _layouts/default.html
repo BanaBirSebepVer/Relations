@@ -40,5 +40,21 @@
       {{ content }}
     </div>
   </div>
+  <hr>
+<h3>Son Gelişmeler ve Haberler</h3>
+<ul>
+  {% assign related_posts = site.posts | where_exp: "post", "post.related_nodes contains page.name" %}
+  
+  {% if related_posts.size > 0 %}
+    {% for post in related_posts %}
+      <li>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a> 
+        <small>({{ post.date | date: "%d.%m.%Y" }})</small>
+      </li>
+    {% endfor %}
+  {% else %}
+    <p>Henüz bu kişi/kurum hakkında bir gelişme eklenmemiş.</p>
+  {% endif %}
+</ul>
 </body>
 </html>

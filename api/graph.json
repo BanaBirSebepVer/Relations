@@ -8,6 +8,24 @@ permalink: /api/graph.json
   "settings": {{ settings | jsonify }},
   "nodes": [
     {% for node in all_nodes %}
+      
+      {% capture node_news %}
+        {% assign rel_posts = site.posts | where_exp: "post", "post.related_nodes contains node.slug" %}
+        {% if rel_posts.size > 0 %}
+          <br><hr>
+          <h4>İlgili Gelişmeler</h4>
+          <ul style="margin-left:20px; font-size:14px; padding-left: 10px;">
+          {% for post in rel_posts %}
+            <li style="margin-bottom: 8px;">
+              <a href="{{ post.url | relative_url }}" target="_blank" style="color: #38bdf8; text-decoration: none;">
+                {{ post.title }}
+              </a>
+            </li>
+          {% endfor %}
+          </ul>
+        {% endif %}
+      {% endcapture %}
+
       {
         "data": {
           "id": {{ node.slug | jsonify }},
@@ -17,7 +35,7 @@ permalink: /api/graph.json
           "image": {{ node.image | default: "" | jsonify }},
           "size_mode": {{ node.size_mode | default: "auto" | jsonify }},
           "url": {{ node.url | relative_url | jsonify }},
-          "content": {{ node.content | jsonify }}
+          "content": {{ node.content | append: node_news | jsonify }}
         }
       }{% unless forloop.last %},{% endunless %}
     {% endfor %}
