@@ -31,9 +31,10 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
         with:
-          enablement: true # Pages etkin değilse API üzerinden otomatik etkinleştirir
+          enablement: true
 
       - name: Build with Jekyll
+        # baseurl'i doğrudan configure-pages çıktısından alacak şekilde garantiye alın:
         run: bundle exec jekyll build --baseurl "${{ steps.pages.base_path }}"
         env:
           JEKYLL_ENV: production
