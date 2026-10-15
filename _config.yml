@@ -1,18 +1,29 @@
 title: "Araştırmacı İlişki Ağı"
 description: "Açık Kaynak İlişki ve Ağ Haritalama Platformu"
-baseurl: "/relations"
+baseurl: "/Relations"
 url: "https://banabirsebepver.github.io"
 
+# Gelecek/güncel tarihli haberlerin (posts) derlenmeme sorununu çözer:
+future: true
+
+# Koleksiyon Yapılandırması
 collections:
   nodes:
     output: true
     permalink: /:name/
 
+# Varsayılan Şablon Atamaları
 defaults:
   - scope:
-      path: "_nodes"           # "type: nodes" yerine klasör yolunu zorunlu kıldık
+      path: ""
+      type: "nodes"
     values:
       layout: "default"
+  - scope:
+      path: ""
+      type: "posts"
+    values:
+      layout: "post"
 
 markdown: kramdown
 kramdown:

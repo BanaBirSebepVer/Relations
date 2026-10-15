@@ -17,7 +17,7 @@ permalink: /api/graph.json
           <ul style="margin-left:20px; font-size:14px; padding-left: 10px;">
           {% for post in rel_posts %}
             <li style="margin-bottom: 8px;">
-              <a href="{{ post.url | relative_url }}" target="_blank" style="color: #38bdf8; text-decoration: none;">
+              <a href=".{{ post.url }}" target="_blank" style="color: #38bdf8; text-decoration: none;">
                 {{ post.title }}
               </a>
             </li>
@@ -34,7 +34,7 @@ permalink: /api/graph.json
           "color": {{ node.color | default: "" | jsonify }},
           "image": {{ node.image | default: "" | jsonify }},
           "size_mode": {{ node.size_mode | default: "auto" | jsonify }},
-          "url": {{ node.url | relative_url | jsonify }},
+          "url": {{ node.url | prepend: "." | jsonify }},
           "content": {{ node.content | append: node_news | jsonify }}
         }
       }{% unless forloop.last %},{% endunless %}
