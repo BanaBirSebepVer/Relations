@@ -5,16 +5,26 @@
 ├── _config.yml
 ├── _data
 │   └── settings.yml
+├── _includes
+│   ├── extentions
+│   ├── funnctions
+│   ├── translate-widget.html
+│   └── view
+│       ├── footer.html
+│       ├── head.html
+│       ├── related-posts.html
+│       └── top-bar.html
 ├── _layouts
-│   └── default.html
+│   ├── default.html
+│   └── post.html
 ├── _nodes
 │   ├── funds
 │   │   └── x-fonu.md
 │   └── people
 │       └── fatma-yilmaz.md
 ├── _posts
-│   └── 2026-10-15-fatma-yilmaz-yeni-fon-acikladi.md
-├── _sites
+│   └── 2026-10-14-fatma-yilmaz-yeni-fon-acikladi.md
+├── _site
 ├── api
 │   └── graph.json
 ├── assets
@@ -23,8 +33,9 @@
 │   └── js
 │       ├── app.js
 │       └── contributors.js
+├── forks.html
 ├── index.html
 ├── template.md
 └── tree.txt
 
-12 directories, 16 files
+16 directories, 23 files
