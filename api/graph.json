@@ -1,0 +1,58 @@
+---
+layout: null
+permalink: /api/graph.json
+---
+{% assign all_nodes = site.nodes %}
+{
+  "nodes": [
+    {% for node in all_nodes %}
+      {
+        "data": {
+          "id": {{ node.id | jsonify }},
+          "label": {{ node.title | default: node.id | jsonify }},
+          "type": {{ node.type | default: "generic" | jsonify }},
+          "color": {{ node.color | jsonify }},
+          "image": {{ node.image | jsonify }},
+          "size_mode": {{ node.size_mode | default: "auto" | jsonify }},
+          "url": {{ node.url | relative_url | jsonify }},
+          "content": {{ node.content | jsonify }}
+        }
+      }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ],
+  "edges": [
+    {% assign edge_index = 0 %}
+    {% for node in all_nodes %}
+      {% if node.relations %}
+        {% for rel in node.relations %}
+          {% if rel.targets %}
+            {% assign target_list = rel.targets %}
+          {% elsif rel.target %}
+            {% assign target_list = rel.target | split: "___CUSTOM_DELIM___" %}
+          {% else %}
+            {% assign target_list = "" | split: "" %}
+          {% endif %}
+
+          {% for t in target_list %}
+            {% if edge_index > 0 %},{% endif %}
+            {
+              "data": {
+                "id": "e_{{ node.id }}_{{ t }}_{{ edge_index }}",
+                "source": {{ node.id | jsonify }},
+                "target": {{ t | jsonify }},
+                "label": {{ rel.type | default: "" | jsonify }},
+                "weight": {{ rel.weight | default: 1 | jsonify }},
+                "evidence": {{ rel.evidence | default: "belgeli" | jsonify }},
+                "direction": {{ rel.direction | default: "auto" | jsonify }},
+                "edge_color": {{ rel.edge_color | jsonify }},
+                "start_date": {{ rel.start_date | jsonify }},
+                "end_date": {{ rel.end_date | jsonify }}
+              }
+            }
+            {% assign edge_index = edge_index | plus: 1 %}
+          {% endfor %}
+        {% endfor %}
+      {% endif %}
+    {% endfor %}
+  ]
+}

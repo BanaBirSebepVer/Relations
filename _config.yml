@@ -1,0 +1,17 @@
+title: "Araştırmacı İlişki Ağı"
+description: "Açık Kaynak Ağ ve İlişki Görselleştirme Platformu"
+baseurl: "" # Eğer proje reposu kullanıyorsanız: "/repo-adi"
+url: ""
+
+collections:
+  nodes:
+    output: true
+    permalink: /nodes/:path/
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
+exclude:
+  - README.md

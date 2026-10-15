@@ -1,0 +1,68 @@
+---
+layout: null
+---
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ site.title }}</title>
+
+  <!-- Cytoscape.js & Eklentileri -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.28.1/cytoscape.min.js"></script>
+  <script src="https://unpkg.com/layout-base/layout-base.js"></script>
+  <script src="https://unpkg.com/cose-base/cose-base.js"></script>
+  <script src="https://unpkg.com/cytoscape-fcose/cytoscape-fcose.js"></script>
+
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+</head>
+<body>
+
+  <!-- Üst Menü & Kontroller -->
+  <header id="top-bar">
+    <div class="brand">
+      <h1>{{ site.title }}</h1>
+    </div>
+    
+    <div class="controls">
+      <input type="text" id="search-input" placeholder="Düğüm ara (İsim, ID)...">
+      <select id="type-filter">
+        <option value="ALL">Tüm Tipler</option>
+      </select>
+      <button id="reset-view-btn">Merkeze Al</button>
+    </div>
+  </header>
+
+  <!-- Grafiğin Çizileceği Alan -->
+  <main id="cy"></main>
+
+  <!-- %80 Kapsayan Detay Sidebar'ı -->
+  <aside id="sidebar" class="hidden">
+    <div class="sidebar-header">
+      <button id="close-sidebar-btn">&times;</button>
+    </div>
+    <div class="sidebar-body">
+      <div id="sidebar-hero"></div>
+      <div id="sidebar-meta"></div>
+      <hr>
+      <div id="sidebar-content"></div>
+    </div>
+    <div class="sidebar-footer">
+      <span id="sidebar-source-link"></span>
+    </div>
+  </aside>
+
+  <!-- Katkıcılar Alanı (Footer) -->
+  <footer id="contributors-bar">
+    <span>Katkıda Bulunanlar:</span>
+    <div id="contributors-list"></div>
+  </footer>
+
+  <script>
+    window.GRAPH_DATA_URL = "{{ '/api/graph.json' | relative_url }}";
+    window.GITHUB_REPO = ""; // İsteğe bağlı: "kullanici/repo" şeklinde girilirse katkıcılar otomatik listelenir
+  </script>
+  <script src="{{ '/assets/js/contributors.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/app.js' | relative_url }}"></script>
+</body>
+</html>
