@@ -187,29 +187,43 @@ body, html {
 
 /* Katkıcılar Paneli */
 #contributors-bar {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  z-index: 10;
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(8px);
-  padding: 6px 12px;
-  border-radius: 6px;
-  border: 1px solid #1e293b;
-  font-size: 12px;
+  gap: 12px;
+  padding: 8px 20px;
+  background: rgba(15, 23, 42, 0.9);
+  border-top: 1px solid #1e293b;
+  font-size: 13px;
+  color: #94a3b8;
 }
 
 #contributors-list {
   display: flex;
-  gap: 4px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
-#contributors-list img {
-  width: 22px;
-  height: 22px;
+.contributor-item {
+  display: inline-block;
+  line-height: 0;
+  transition: transform 0.2s ease, z-index 0.2s ease;
+}
+
+.contributor-item:hover {
+  transform: scale(1.18);
+  z-index: 10;
+}
+
+.contributor-avatar {
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  border: 1px solid #334155;
+  border: 2px solid #334155;
+  object-fit: cover;
+  background-color: #0f172a;
+}
+
+.contributor-item:hover .contributor-avatar {
+  border-color: #38bdf8;
 }

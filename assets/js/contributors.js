@@ -1,27 +1,63 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const container = document.getElementById("contributors-list");
-  if (!window.GITHUB_REPO || !container) return;
+  const listContainer = document.getElementById("contributors-list");
+  if (!listContainer) return;
 
-  fetch(`https://api.github.com/repos/${window.GITHUB_REPO}/contributors`)
-    .then(res => res.json())
+  // 1. Repo adını belirle (Önce manuel ayara bak, yoksa URL'den otomatik çıkar)
+  let repo = window.GITHUB_REPO;
+
+  if (!repo || repo.trim() === "") {
+    const host = window.location.hostname; // Örn: banabirsebepver.github.io
+    const pathParts = window.location.pathname.split('/').filter(Boolean); // Örn: ["Relations"]
+
+    if (host.endsWith(".github.io")) {
+      const owner = host.split(".")[0];
+      const repoName = pathParts.length > 0 ? pathParts[0] : `${owner}.github.io`;
+      repo = `${owner}/${repoName}`;
+    }
+  }
+
+  // Yerel (localhost) çalışmada veya repo bulunamadığında varsayılan repo:
+  if (!repo) {
+    repo = "banabirsebepver/Relations";
+  }
+
+  // 2. GitHub API'den katkıcıları çek
+  fetch(`https://api.github.com/repos/${repo}/contributors`)
+    .then(response => {
+      if (!response.ok) throw new Error("API yanıt vermedi");
+      return response.json();
+    })
     .then(contributors => {
-      if (!Array.isArray(contributors)) return;
-      container.innerHTML = "";
-      contributors.slice(0, 10).forEach(c => {
+      if (!Array.isArray(contributors) || contributors.length === 0) {
+        listContainer.innerHTML = "<small style='color:#64748b;'>Henüz katkıcı bulunmuyor.</small>";
+        return;
+      }
+
+      listContainer.innerHTML = ""; // Önceki içeriği temizle
+
+      contributors.forEach(user => {
+        // GitHub botlarını (örn: github-actions[bot]) listeden hariç tut
+        if (user.type === "Bot") return;
+
         const link = document.createElement("a");
-        link.href = c.html_url;
+        link.href = user.html_url;
         link.target = "_blank";
-        link.title = `${c.login} (${c.contributions} katkı)`;
-        
+        link.rel = "noopener noreferrer";
+        link.className = "contributor-item";
+        link.title = `${user.login} (${user.contributions} katkı)`;
+
         const img = document.createElement("img");
-        img.src = c.avatar_url;
-        img.alt = c.login;
+        // Performans için avatarları 64px boyutunda çekiyoruz
+        img.src = `${user.avatar_url}&s=64`;
+        img.alt = user.login;
+        img.className = "contributor-avatar";
 
         link.appendChild(img);
-        container.appendChild(link);
+        listContainer.appendChild(link);
       });
     })
-    .catch(() => {
-      container.parentElement.style.display = "none";
+    .catch(err => {
+      console.warn("Katkıcılar yüklenemedi:", err);
+      listContainer.innerHTML = "<small style='color:#64748b;'>Katkıcı listesi yüklenemedi.</small>";
     });
 });

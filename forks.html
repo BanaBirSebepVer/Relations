@@ -1,0 +1,237 @@
+---
+layout: null
+permalink: /forks/
+---
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Topluluk Ağları (Forks) | {{ site.title }}</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <style>
+    body {
+      background-color: #0b1120;
+      color: #cbd5e1;
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      overflow-y: auto !important; /* Harita sayfasındaki taşma kilidini açar */
+    }
+    .forks-container {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 24px;
+    }
+    .header-box {
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+    .back-btn {
+      display: inline-block;
+      margin-bottom: 16px;
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 14px;
+    }
+    .header-box h1 {
+      font-size: 32px;
+      color: #f8fafc;
+      margin: 0 0 8px 0;
+    }
+    .header-box p {
+      color: #94a3b8;
+      margin: 0;
+      font-size: 15px;
+    }
+    .forks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+    .fork-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .fork-card:hover {
+      transform: translateY(-3px);
+      border-color: #38bdf8;
+    }
+    .fork-owner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .fork-owner img {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 2px solid #0f172a;
+    }
+    .fork-owner-info h3 {
+      margin: 0;
+      font-size: 16px;
+      color: #f8fafc;
+      word-break: break-all;
+    }
+    .fork-owner-info span {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .fork-desc {
+      font-size: 13.5px;
+      color: #cbd5e1;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      flex-grow: 1;
+    }
+    .fork-meta {
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 16px;
+      display: flex;
+      gap: 16px;
+    }
+    .fork-actions {
+      display: flex;
+      gap: 10px;
+      border-top: 1px solid #334155;
+      padding-top: 14px;
+    }
+    .btn-link {
+      flex: 1;
+      text-align: center;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .btn-repo {
+      background: #0f172a;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+    }
+    .btn-live {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+    .btn-link:hover {
+      opacity: 0.9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="forks-container">
+    <div class="header-box">
+      <a href="../" class="back-btn">&larr; Ağ Haritasına Dön</a>
+      <h1>Topluluk Tarafından Geliştirilen Ağlar</h1>
+      <p>Bu açık kaynaklı altyapıyı forklayarak kendi araştırma ve ilişki ağlarını oluşturan projeler.</p>
+    </div>
+
+    <div id="forks-list" class="forks-grid">
+      <p style="color: #94a3b8;">Projeler GitHub üzerinden yükleniyor...</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async () => {
+      const container = document.getElementById("forks-list");
+
+      // Mevcut ana deponun adını tespit et (veya varsayılan olarak banabirsebepver/Relations kullan)
+      let mainRepo = "banabirsebepver/Relations";
+      const host = window.location.hostname;
+      const pathParts = window.location.pathname.split('/').filter(Boolean);
+      
+      if (host.endsWith(".github.io") && pathParts.length > 0 && pathParts[0] !== "forks") {
+        const owner = host.split(".")[0];
+        mainRepo = `${owner}/${pathParts[0]}`;
+      }
+
+      try {
+        // GitHub API'den fork listesini çek (En çok yıldız alana göre sıralı, maksimum 100 adet)
+        const res = await fetch(`https://api.github.com/repos/${mainRepo}/forks?sort=stargazers&per_page=100`);
+        if (!res.ok) throw new Error("API hatası");
+        const forks = await res.json();
+
+        if (!Array.isArray(forks) || forks.length === 0) {
+          container.innerHTML = "<p style='color:#64748b;'>Henüz forklanmış bir proje bulunmuyor. İlk forklayan siz olun!</p>";
+          return;
+        }
+
+        container.innerHTML = "";
+
+        for (const fork of forks) {
+          const card = document.createElement("div");
+          card.className = "fork-card";
+
+          // Eğer kullanıcı kendi özel domainini (homepage) girdiyse onu al, 
+          // girmediyse ama GitHub Pages açıksa standart github.io adresini oluştur
+          const liveUrl = fork.homepage && fork.homepage.trim() !== "" 
+            ? fork.homepage 
+            : (fork.has_pages ? `https://${fork.owner.login}.github.io/${fork.name}/` : null);
+
+          const updatedDate = new Date(fork.pushed_at).toLocaleDateString("tr-TR");
+          const defaultDesc = fork.description || "Açık Kaynak İlişki ve Ağ Haritalama Platformu";
+
+          card.innerHTML = `
+            <div>
+              <div class="fork-owner">
+                <img src="${fork.owner.avatar_url}&s=80" alt="${fork.owner.login}">
+                <div class="fork-owner-info">
+                  <h3 id="title-${fork.id}">${fork.name}</h3>
+                  <span>@${fork.owner.login}</span>
+                </div>
+              </div>
+              <p class="fork-desc" id="desc-${fork.id}">${defaultDesc}</p>
+            </div>
+            <div>
+              <div class="fork-meta">
+                <span>⭐ ${fork.stargazers_count} Yıldız</span>
+                <span>🕒 Son Güncelleme: ${updatedDate}</span>
+              </div>
+              <div class="fork-actions">
+                <a href="${fork.html_url}" target="_blank" rel="noopener" class="btn-link btn-repo">GitHub Deposu</a>
+                ${liveUrl ? `<a href="${liveUrl}" target="_blank" rel="noopener" class="btn-link btn-live">Ağı İncele &rarr;</a>` : ''}
+              </div>
+            </div>
+          `;
+
+          container.appendChild(card);
+
+          // EKSTRA ÖZELLİK: Forklayan kişinin kendi _config.yml dosyasındaki özel "title" (Başlık) bilgisini çek
+          fetch(`https://raw.githubusercontent.com/${fork.full_name}/${fork.default_branch}/_config.yml`)
+            .then(r => r.ok ? r.text() : null)
+            .then(yamlText => {
+              if (!yamlText) return;
+              const titleMatch = yamlText.match(/^title:\s*["']?([^"'\n]+)["']?/m);
+              const descMatch = yamlText.match(/^description:\s*["']?([^"'\n]+)["']?/m);
+              
+              if (titleMatch && titleMatch[1]) {
+                document.getElementById(`title-${fork.id}`).textContent = titleMatch[1].trim();
+              }
+              if (descMatch && descMatch[1]) {
+                document.getElementById(`desc-${fork.id}`).textContent = descMatch[1].trim();
+              }
+            })
+            .catch(() => {}); // Hata olursa varsayılan repo adını korur
+        }
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = "<p style='color:#ef4444;'>Projeler yüklenirken bir hata oluştu veya GitHub API limitine takıldı.</p>";
+      }
+    });
+  </script>
+</body>
+</html>
