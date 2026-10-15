@@ -1,6 +1,8 @@
 title: "Araştırmacı İlişki Ağı"
 description: "Açık Kaynak İlişki ve Ağ Haritalama Platformu"
-baseurl: "" # Eğer proje reposu kullanıyorsanız: "/repo-adi"
+# Repo adınız ne ise başına slash koyarak yazın (örn: "/relations")
+# Eğer 'username.github.io' şeklindeki ana repoysa tırnak içini boş bırakın: ""
+baseurl: "/relations"
 url: ""
 
 # Koleksiyon Tanımlamaları

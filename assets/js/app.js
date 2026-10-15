@@ -1,12 +1,26 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  try {
-    const response = await fetch(window.GRAPH_DATA_URL);
-    if (!response.ok) throw new Error(`Veri alınamadı: ${response.statusText}`);
-    
-    const rawData = await response.json();
-    const cfg = rawData.settings || {};
+  // fcose eklentisini güvenli bir şekilde kaydet
+  if (typeof cytoscape !== "undefined" && typeof fcose !== "undefined") {
+    cytoscape.use(fcose);
+  }
 
-    // Ayar Kısayolları (Varsayılan değer korumalı)
+  const cyContainer = document.getElementById("cy");
+  if (!cyContainer) {
+    console.error("Hata: '#cy' kapsayıcısı DOM üzerinde bulunamadı.");
+    return;
+  }
+
+  try {
+    console.log("Veri çekiliyor:", window.GRAPH_DATA_URL);
+    const response = await fetch(window.GRAPH_DATA_URL);
+    if (!response.ok) {
+      throw new Error(`graph.json dosyası yüklenemedi! HTTP Kodu: ${response.status} (${response.statusText})`);
+    }
+
+    const rawData = await response.json();
+    console.log("Çekilen Ham Veri:", rawData);
+
+    const cfg = rawData.settings || {};
     const typeColors = cfg.type_colors || {};
     const nodeDefaults = cfg.nodes || {};
     const layoutCfg = cfg.layout || {};
@@ -17,6 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 1. Düğümleri Kaydet
     (rawData.nodes || []).forEach(n => {
+      if (!n || !n.data || !n.data.id) return;
       const id = String(n.data.id).trim();
       nodeSet.set(id, {
         ...n.data,
@@ -26,13 +41,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (n.data.type) registeredTypes.add(n.data.type);
     });
 
-    // 2. Hayalet Düğümleri Yakala
+    // 2. Eksik (Hayalet) Düğümleri Tespit Et
     rawEdges.forEach(e => {
-      const src = String(e.data.source).trim();
-      const tgt = String(e.data.target).trim();
+      if (!e || !e.data) return;
+      const src = String(e.data.source || "").trim();
+      const tgt = String(e.data.target || "").trim();
 
       [src, tgt].forEach(nodeId => {
-        if (!nodeSet.has(nodeId)) {
+        if (nodeId && !nodeSet.has(nodeId)) {
           nodeSet.set(nodeId, {
             id: nodeId,
             label: nodeId,
@@ -48,15 +64,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // 3. Çift Yön Haritası
+    // 3. Karşılıklı İlişki (Mutual) Haritası
     const relationKeys = new Set();
     rawEdges.forEach(e => {
-      relationKeys.add(`${String(e.data.source).trim()}->${String(e.data.target).trim()}`);
+      if (e && e.data) {
+        relationKeys.add(`${String(e.data.source).trim()}->${String(e.data.target).trim()}`);
+      }
     });
 
     // 4. Kenarları İşle
     let edgeCounter = 0;
-    const finalEdges = rawEdges.map(e => {
+    const finalEdges = [];
+    rawEdges.forEach(e => {
+      if (!e || !e.data || !e.data.source || !e.data.target) return;
       edgeCounter++;
       const src = String(e.data.source).trim();
       const tgt = String(e.data.target).trim();
@@ -73,7 +93,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       let lineStyle = (e.data.evidence === "iddia") ? "dashed" : "solid";
 
-      return {
+      finalEdges.push({
         data: {
           id: `e_${edgeCounter}_${src}_${tgt}`,
           source: src,
@@ -84,7 +104,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           targetArrowShape: arrowShape,
           lineStyle: lineStyle
         }
-      };
+      });
     });
 
     // 5. Derece ve Boyut Hesaplama
@@ -102,7 +122,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       
       const computedSize = n.size_mode === "fixed" ? fixedS : Math.min(maxS, Math.max(minS, minS + deg * 7));
 
-      // Renk Önceliği: 1. Dosyadaki HEX, 2. Type rengi, 3. Genel varsayılan
       let resolvedColor = nodeDefaults.default_color || "#0284c7";
       if (n.color && n.color.trim() !== "") {
         resolvedColor = n.color;
@@ -119,13 +138,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       };
     });
 
+    if (finalNodes.length === 0) {
+      console.warn("Uyarı: Gösterilecek hiçbir düğüm (node) bulunamadı. _nodes/ altındaki dosyaları kontrol edin.");
+    }
+
     // 6. Cytoscape Başlatma
-    const activeLayout = (typeof cytoscape('core', layoutCfg.name || 'fcose') === 'function') 
-      ? (layoutCfg.name || 'fcose') 
-      : 'cose';
+    const activeLayout = (typeof cytoscape('core', 'fcose') === 'function') ? 'fcose' : 'cose';
 
     const cy = cytoscape({
-      container: document.getElementById("cy"),
+      container: cyContainer,
       elements: {
         nodes: finalNodes,
         edges: finalEdges
@@ -190,7 +211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    // 7. Filtre Menüsü
+    // 7. Filtre Menüsü Doldurma
     const typeFilter = document.getElementById("type-filter");
     registeredTypes.forEach(t => {
       const opt = document.createElement("option");
@@ -228,7 +249,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       matched.neighborhood().removeClass("dimmed");
     });
 
-    // 9. Sidebar Etkileşimi
+    // 9. Sidebar ve Focus Modu
     const sidebar = document.getElementById("sidebar");
     const sidebarHero = document.getElementById("sidebar-hero");
     const sidebarMeta = document.getElementById("sidebar-meta");
