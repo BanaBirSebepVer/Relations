@@ -3,21 +3,17 @@ description: "Açık Kaynak İlişki ve Ağ Haritalama Platformu"
 baseurl: "/relations"
 url: "https://banabirsebepver.github.io"
 
-# Koleksiyon Yapılandırması
 collections:
   nodes:
     output: true
-    permalink: /:name/       # DİKKAT: Koleksiyonlarda :slug çalışmaz, :name ZORUNLUDUR!
+    permalink: /:name/
 
-# Varsayılan Şablon Atamaları
 defaults:
   - scope:
-      path: ""               # Tüm klasörleri kapsar
-      type: "nodes"          # Sadece nodes koleksiyonuna uygular
+      path: "_nodes"           # "type: nodes" yerine klasör yolunu zorunlu kıldık
     values:
-      layout: "default"      # _layouts/default.html şablonunu giydirir
+      layout: "default"
 
-# Markdown Ayarları
 markdown: kramdown
 kramdown:
   input: GFM
