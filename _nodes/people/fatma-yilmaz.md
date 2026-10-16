@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: people
 id: "fatma-yilmaz"
 title: "Fatma Yılmaz"
 type: "person"

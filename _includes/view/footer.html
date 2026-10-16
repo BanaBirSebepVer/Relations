@@ -11,3 +11,50 @@
       </a>
     </div>
   </footer>
+
+
+  <!-- Göreceli JS ve Veri Yolları -->
+  <script>
+    window.GRAPH_DATA_URL = "./api/graph.json";
+    window.GITHUB_REPO = ""; 
+  </script>
+  <script src="./assets/js/contributors.js"></script>
+  <script src="./assets/js/app.js"></script>
+
+  <!-- ========================================== -->
+  <!-- GOOGLE TRANSLATE ENTEGRASYONU -->
+  <!-- ========================================== -->
+  <div id="google_translate_element"></div>
+
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'tr', // Sitenin ana dili
+        autoDisplay: false
+      }, 'google_translate_element');
+
+      // Özel menümüz ile Google Çeviri menüsünü birbirine bağlıyoruz
+      setTimeout(function() {
+        var langSelect = document.getElementById('lang-switcher');
+        langSelect.addEventListener('change', function(e) {
+          var targetLang = e.target.value;
+          var googleCombo = document.querySelector(".goog-te-combo");
+          
+          if (googleCombo) {
+            googleCombo.value = targetLang;
+            // Google script'inin değişikliği algılaması için olayı tetikliyoruz
+            if (document.createEvent) {
+              var event = document.createEvent('HTMLEvents');
+              event.initEvent('change', true, true);
+              googleCombo.dispatchEvent(event);
+            } else {
+              var event = document.createEventObject();
+              event.eventType = 'change';
+              googleCombo.fireEvent('on' + event.eventType, event);
+            }
+          }
+        });
+      }, 1000); // Google bileşeninin DOM'a yüklenmesi için ufak bir gecikme
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>

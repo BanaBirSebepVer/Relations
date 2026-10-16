@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title }} | {{ site.title }}</title>
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+  <style>
+    .standalone-page {
+      max-width: 860px;
+      margin: 60px auto;
+      padding: 0 24px;
+      line-height: 1.8;
+      color: #cbd5e1;
+    }
+    .standalone-page h1 {
+      font-size: 32px;
+      color: #f8fafc;
+      margin-bottom: 8px;
+    }
+    .standalone-page a.back-btn {
+      display: inline-block;
+      margin-bottom: 24px;
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <div class="standalone-page">
+    <a href="../" class="back-btn">&larr; Ağ Haritasına Dön</a> 
+    {% if page.image %}
+      <img src="{{ page.image }}" style="width:100%; max-height:360px; object-fit:cover; border-radius:8px; margin-bottom:24px;">
+    {% endif %}
+    <h1>{{ page.title }}</h1>
+    <span style="display:inline-block; padding:4px 8px; background:#1e293b; color:#38bdf8; border-radius:4px; font-size:12px; margin-bottom:24px; text-transform:uppercase;">{{ page.type }}</span>
+    <hr style="border:0; height:1px; background:#1e293b; margin-bottom:24px;">
+    <div class="content">
+      {{ content }}
+    </div>
+    
+    <hr>
+    <h3>Son Gelişmeler ve Haberler</h3>
+    <ul>
+      <!-- Eşleşme kuralı page.id olarak düzeltildi -->
+      {% assign related_posts = site.posts | where_exp: "post", "post.related_nodes contains page.id" %}
+      
+      {% if related_posts.size > 0 %}
+        {% for post in related_posts %}
+          <li>
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a> 
+            <small>({{ post.date | date: "%d.%m.%Y" }})</small>
+          </li>
+        {% endfor %}
+      {% else %}
+        <p>Henüz bu kişi/kurum hakkında bir gelişme eklenmemiş.</p>
+      {% endif %}
+    </ul>
+  </div>
+</body>
+</html>
