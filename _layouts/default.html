@@ -47,19 +47,19 @@
     <hr>
     <h3>Son Gelişmeler ve Haberler</h3>
     <ul>
-      <!-- Eşleşme kuralı page.id veya page.slug -->
-      {% assign related_posts = site.posts | where_exp: "post", "post.related_nodes contains page.id or post.related_nodes contains page.slug" %}
-      
-      {% if related_posts.size > 0 %}
-        {% for post in related_posts %}
+      {% assign has_related_posts = false %}
+      {% for post in site.posts %}
+        {% if post.related_nodes contains page.id or post.related_nodes contains page.slug %}
+          {% assign has_related_posts = true %}
           <li>
             <a href="{{ post.url | relative_url }}">{{ post.title }}</a> 
             <small>({{ post.date | date: "%d.%m.%Y" }})</small>
           </li>
-        {% endfor %}
-      {% else %}
+        {% endif %}
+      {% endfor %}
+      {% unless has_related_posts %}
         <p>Henüz bu kişi/kurum hakkında bir gelişme eklenmemiş.</p>
-      {% endif %}
+      {% endunless %}
     </ul>
   </div>
 </body>
