@@ -6,6 +6,10 @@
   <title>{{ page.title }} | {{ site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <style>
+    body, html {
+      overflow-y: auto !important;
+      height: auto !important;
+    }
     .standalone-page {
       max-width: 860px;
       margin: 60px auto;
@@ -29,7 +33,7 @@
 </head>
 <body>
   <div class="standalone-page">
-    <a href="../" class="back-btn">&larr; Ağ Haritasına Dön</a>
+    <a href="{{ '/' | relative_url }}" class="back-btn">&larr; Ağ Haritasına Dön</a>
     {% if page.image %}
       <img src="{{ page.image }}" style="width:100%; max-height:360px; object-fit:cover; border-radius:8px; margin-bottom:24px;">
     {% endif %}
@@ -43,8 +47,8 @@
     <hr>
     <h3>Son Gelişmeler ve Haberler</h3>
     <ul>
-      <!-- Eşleşme kuralı page.id olarak düzeltildi -->
-      {% assign related_posts = site.posts | where_exp: "post", "post.related_nodes contains page.id" %}
+      <!-- Eşleşme kuralı page.id veya page.slug -->
+      {% assign related_posts = site.posts | where_exp: "post", "post.related_nodes contains page.id or post.related_nodes contains page.slug" %}
       
       {% if related_posts.size > 0 %}
         {% for post in related_posts %}

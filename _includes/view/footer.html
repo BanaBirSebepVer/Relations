@@ -6,20 +6,11 @@
     </div>
     
     <div>
-      <a href="./forks/" style="color: #38bdf8; text-decoration: none; font-weight: 500; font-size: 13px;">
+      <a href="{{ '/forks/' | relative_url }}" style="color: #38bdf8; text-decoration: none; font-weight: 500; font-size: 13px;">
         🌐 Topluluk Ağlarını (Forks) Keşfet &rarr;
       </a>
     </div>
   </footer>
-
-
-  <!-- Göreceli JS ve Veri Yolları -->
-  <script>
-    window.GRAPH_DATA_URL = "./api/graph.json";
-    window.GITHUB_REPO = ""; 
-  </script>
-  <script src="./assets/js/contributors.js"></script>
-  <script src="./assets/js/app.js"></script>
 
   <!-- ========================================== -->
   <!-- GOOGLE TRANSLATE ENTEGRASYONU -->
@@ -36,24 +27,26 @@
       // Özel menümüz ile Google Çeviri menüsünü birbirine bağlıyoruz
       setTimeout(function() {
         var langSelect = document.getElementById('lang-switcher');
-        langSelect.addEventListener('change', function(e) {
-          var targetLang = e.target.value;
-          var googleCombo = document.querySelector(".goog-te-combo");
-          
-          if (googleCombo) {
-            googleCombo.value = targetLang;
-            // Google script'inin değişikliği algılaması için olayı tetikliyoruz
-            if (document.createEvent) {
-              var event = document.createEvent('HTMLEvents');
-              event.initEvent('change', true, true);
-              googleCombo.dispatchEvent(event);
-            } else {
-              var event = document.createEventObject();
-              event.eventType = 'change';
-              googleCombo.fireEvent('on' + event.eventType, event);
+        if (langSelect) {
+          langSelect.addEventListener('change', function(e) {
+            var targetLang = e.target.value;
+            var googleCombo = document.querySelector(".goog-te-combo");
+            
+            if (googleCombo) {
+              googleCombo.value = targetLang;
+              // Google script'inin değişikliği algılaması için olayı tetikliyoruz
+              if (document.createEvent) {
+                var event = document.createEvent('HTMLEvents');
+                event.initEvent('change', true, true);
+                googleCombo.dispatchEvent(event);
+              } else {
+                var event = document.createEventObject();
+                event.eventType = 'change';
+                googleCombo.fireEvent('on' + event.eventType, event);
+              }
             }
-          }
-        });
+          });
+        }
       }, 1000); // Google bileşeninin DOM'a yüklenmesi için ufak bir gecikme
     }
   </script>

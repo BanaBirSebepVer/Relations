@@ -187,11 +187,17 @@ body, html {
 
 /* Katkıcılar Paneli */
 #contributors-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 8px 20px;
   background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(8px);
   border-top: 1px solid #1e293b;
   font-size: 13px;
   color: #94a3b8;

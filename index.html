@@ -52,11 +52,11 @@ layout: null
 
   <!-- Göreceli JS ve Veri Yolları -->
   <script>
-    window.GRAPH_DATA_URL = "./api/graph.json";
+    window.GRAPH_DATA_URL = "{{ '/api/graph.json' | relative_url }}";
     window.GITHUB_REPO = ""; 
   </script>
-  <script src="./assets/js/contributors.js"></script>
-  <script src="./assets/js/app.js"></script>
+  <script src="{{ '/assets/js/contributors.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/app.js' | relative_url }}"></script>
 
   
 

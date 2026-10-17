@@ -6,6 +6,10 @@
   <title>{{ page.title }} | {{ site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
   <style>
+    body, html {
+      overflow-y: auto !important;
+      height: auto !important;
+    }
     .post-page {
       max-width: 860px;
       margin: 60px auto;
@@ -84,6 +88,9 @@
       <div>
         {% for node_id in page.related_nodes %}
           {% assign matched_node = site.nodes | where: "id", node_id | first %}
+          {% unless matched_node %}
+            {% assign matched_node = site.nodes | where: "slug", node_id | first %}
+          {% endunless %}
           {% if matched_node %}
             <a href="{{ matched_node.url | relative_url }}" class="node-tag">
               {{ matched_node.title | default: node_id }} &rarr;
