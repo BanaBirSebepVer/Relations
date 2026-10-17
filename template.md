@@ -10,6 +10,18 @@ image: "/assets/images/nodes/x-fund.jpg"    # Featured image (inside the Cytosca
 size_mode: "auto"                           # "auto" (dynamic by connection count) or "fixed" (standard)
 lang: "en"                                  # Language of this file (defaults to `default_lang` in _config.yml)
 
+# Optional node styling (full list: CONTRIBUTING.md, section "Node Options"; examples: _nodes/examples/)
+# shape: "round-hexagon"                    # Any Cytoscape node shape
+# border_style: "dashed"                    # solid, dotted, dashed, double
+# border_width: 4
+# border_color: "#facc15"
+# label_position: "top"                     # top, center, bottom
+# opacity: 0.8
+# width: 80                                 # Override the automatic size
+# height: 80
+# image_fit: "cover"                        # cover, contain, none
+# parent: "group-id"                        # Draw this node inside another (compound) node
+
 # ==========================================
 # 2. RELATIONS
 # ==========================================

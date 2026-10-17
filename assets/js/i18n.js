@@ -5,7 +5,7 @@
  * Any language file added to that folder shows up in the language switcher.
  *
  * Markup helpers:
- *   data-i18n="key"              -> element.innerHTML
+ *   data-i18n="key"              -> element.textContent (translations are plain text, never HTML)
  *   data-i18n-placeholder="key"  -> placeholder attribute
  *   data-i18n-title="key"        -> title attribute
  *
@@ -57,7 +57,7 @@
     /** Applies translations to all marked elements under `root`. */
     apply(root = document) {
       root.querySelectorAll("[data-i18n]").forEach((el) => {
-        el.innerHTML = this.t(el.getAttribute("data-i18n"));
+        el.textContent = this.t(el.getAttribute("data-i18n"));
       });
       root.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
         el.placeholder = this.t(el.getAttribute("data-i18n-placeholder"));

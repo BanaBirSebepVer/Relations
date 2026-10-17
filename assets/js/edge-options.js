@@ -138,7 +138,7 @@
   };
 
   window.EdgeOptions = {
-    resolve, edgeStyle,
+    resolve, edgeStyle, pickEnum, pickNumber,
     CURVE_STYLES, LINE_STYLES, LINE_CAPS, ARROW_SHAPES, ARROW_FILLS, TAXI_DIRECTIONS, LABEL_ROTATIONS
   };
 })();

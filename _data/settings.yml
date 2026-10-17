@@ -17,6 +17,7 @@ nodes:
   min_size: 32            # Size of the node with the fewest connections
   max_size: 84            # Maximum size for the node with the most connections
   fixed_size: 36          # Size of nodes with size_mode: fixed
+  default_shape: "ellipse" # Any Cytoscape node shape (see CONTRIBUTING.md)
 
 # Edge defaults
 edges:
@@ -27,6 +28,12 @@ edges:
   default_curve_style: "bezier"  # Any Cytoscape curve style (see CONTRIBUTING.md)
   default_line_style: "solid"    # solid, dashed or dotted
   default_opacity: 0.8           # 0-1
+
+# Shape per category (type); a node's own `shape` option wins
+type_shapes:
+  organization: "round-rectangle"
+  fund: "round-hexagon"
+  event: "diamond"
 
 # Colors per category (type)
 # (Used when no custom HEX color is set in the front matter)

@@ -24,6 +24,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const rawData = await response.json();
     console.log("Raw data:", rawData);
 
+    // Escapes text before it is placed into an HTML string
+    const escapeHtml = (str) => String(str).replace(/[&<>"']/g, c => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    }[c]));
+
     const cfg = rawData.settings || {};
     const typeColors = cfg.type_colors || {};
     const nodeDefaults = cfg.nodes || {};
@@ -58,7 +63,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         image: base.image,
         size_mode: base.size_mode,
         isGhost: false,
-        news: base.news || []
+        news: base.news || [],
+        // Raw visual options (shape, border_*, label_*, parent, ...) from the original file
+        options: base,
+        parent: base.parent ? String(base.parent).trim() : ""
       });
     });
 
@@ -82,6 +90,18 @@ document.addEventListener("DOMContentLoaded", async () => {
           registeredTypes.add("ghost");
         }
       });
+    });
+
+    // 2b. Parent (compound) nodes that have no file become ghost nodes too
+    Array.from(nodeSet.values()).forEach(n => {
+      if (n.parent && !nodeSet.has(n.parent)) {
+        nodeSet.set(n.parent, {
+          id: n.parent, label: n.parent, type: "ghost",
+          color: nodeDefaults.ghost_color || "#475569",
+          image: "", size_mode: "fixed", isGhost: true, options: {}, parent: ""
+        });
+        registeredTypes.add("ghost");
+      }
     });
 
     // 3. Reciprocal relation map (A->B and B->A both declared)
@@ -122,6 +142,30 @@ document.addEventListener("DOMContentLoaded", async () => {
       degreeMap.set(e.data.target, (degreeMap.get(e.data.target) || 0) + 1);
     });
 
+    // Children of a compound (group) node that have no edges would be laid out in one
+    // long row. Hidden "layout-only" edges link them in a grid so the group stays compact.
+    const childrenByParent = new Map();
+    nodeSet.forEach(n => {
+      if (n.parent && n.parent !== n.id) {
+        if (!childrenByParent.has(n.parent)) childrenByParent.set(n.parent, []);
+        childrenByParent.get(n.parent).push(n.id);
+      }
+    });
+    childrenByParent.forEach(children => {
+      const loose = children.filter(id => !degreeMap.has(id));
+      const cols = Math.max(2, Math.ceil(Math.sqrt(loose.length)));
+      loose.forEach((id, i) => {
+        [i - 1, i - cols].forEach(j => {
+          if (j >= 0 && (j === i - cols || i % cols !== 0)) {
+            finalEdges.push({
+              data: { id: `layout_${id}_${loose[j]}`, source: loose[j], target: id },
+              classes: "layout-only"
+            });
+          }
+        });
+      });
+    });
+
     const finalNodes = Array.from(nodeSet.values()).map(n => {
       const deg = degreeMap.get(n.id) || 1;
       const minS = nodeDefaults.min_size || 32;
@@ -137,11 +181,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         resolvedColor = typeColors[n.type];
       }
 
+      const { options, parent, ...nodeData } = n;
       return {
         data: {
-          ...n,
+          ...nodeData,
+          // A node cannot be its own parent
+          ...(parent && parent !== n.id ? { parent: parent } : {}),
           computedSize: computedSize,
-          bgColor: resolvedColor
+          bgColor: resolvedColor,
+          ...window.NodeOptions.resolve(options || {}, {
+            nodeDefaults: nodeDefaults,
+            typeShapes: cfg.type_shapes,
+            type: n.type,
+            computedSize: computedSize,
+            hasImage: !!n.image
+          })
         }
       };
     });
@@ -160,33 +214,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         edges: finalEdges
       },
       style: [
-        {
-          selector: "node",
-          style: {
-            "label": "data(label)",
-            "color": "#f8fafc",
-            "font-size": "11px",
-            "text-valign": "bottom",
-            "text-margin-y": 6,
-            "width": "data(computedSize)",
-            "height": "data(computedSize)",
-            "background-color": "data(bgColor)",
-            "border-width": 2,
-            "border-color": nodeDefaults.border_color || "#0f172a"
-          }
-        },
-        {
-          selector: 'node[image][image != ""]',
-          style: {
-            "background-image": "data(image)",
-            "background-fit": "cover",
-            "border-color": "#38bdf8",
-            "border-width": 2
-          }
-        },
+        ...window.NodeOptions.nodeStyles,
         {
           selector: "edge",
           style: window.EdgeOptions.edgeStyle
+        },
+        {
+          selector: ".layout-only",
+          style: { "display": "none" }
         },
         {
           selector: ".dimmed",
@@ -226,7 +261,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           node.data({
             label: id,
-            content: I18n.t("ghost_content", { id: id })
+            content: `<p>${escapeHtml(I18n.t("ghost_content"))}</p><p>${escapeHtml(I18n.t("ghost_hint", { file: `${id}.md` }))}</p>`
           });
         }
       });
@@ -284,10 +319,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const sidebarContent = document.getElementById("sidebar-content");
     const sidebarSourceLink = document.getElementById("sidebar-source-link");
 
-    const escapeHtml = (str) => String(str).replace(/[&<>"']/g, c => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-    }[c]));
-
     // News entries are grouped by `ref` (translations of one post share it)
     const renderNews = (news) => {
       const groups = new Map();
@@ -300,17 +331,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         const post = I18n.pick(variants);
         return `<li style="margin-bottom: 8px;"><a href="${escapeHtml(post.url)}" target="_blank" style="color: #38bdf8; text-decoration: none;">${escapeHtml(post.title)}</a></li>`;
       }).join("");
-      return `<br><hr><h4>${I18n.t("related_news")}</h4><ul style="margin-left:20px; font-size:14px; padding-left: 10px;">${items}</ul>`;
+      return `<br><hr><h4>${escapeHtml(I18n.t("related_news"))}</h4><ul style="margin-left:20px; font-size:14px; padding-left: 10px;">${items}</ul>`;
     };
 
     const renderSidebar = (node) => {
       const data = node.data();
       sidebarHero.innerHTML = data.image ? `<img src="${escapeHtml(data.image)}" class="featured" alt="${escapeHtml(data.label)}">` : "";
       sidebarMeta.innerHTML = `<h1>${escapeHtml(data.label)}</h1><span class="badge">${escapeHtml(typeLabel(data.type))}</span>`;
-      sidebarContent.innerHTML = (data.content || I18n.t("no_details")) + renderNews(data.news);
+      sidebarContent.innerHTML = (data.content || escapeHtml(I18n.t("no_details"))) + renderNews(data.news);
       sidebarSourceLink.innerHTML = data.isGhost
-        ? `<span>${I18n.t("ghost_status")}</span>`
-        : `<a href="${escapeHtml(data.url)}" target="_blank">${I18n.t("open_page")} &rarr;</a>`;
+        ? `<span>${escapeHtml(I18n.t("ghost_status"))}</span>`
+        : `<a href="${escapeHtml(data.url)}" target="_blank" rel="noopener">${escapeHtml(I18n.t("open_page"))} &rarr;</a>`;
     };
 
     cy.on("tap", "node", (evt) => {

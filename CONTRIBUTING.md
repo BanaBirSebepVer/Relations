@@ -24,7 +24,7 @@ relations:
 ---
 ```
 
-See [template.md](template.md) for every available field and [Edge options](#5-edge-options) for the full list of relation options.
+See [template.md](template.md) for every available field, [Edge options](#5-edge-options) for relation styling and [Node options](#6-node-options) for node styling.
 
 ## 3. Translating Content
 To translate a node or a post, add a file next to the original named `<original-name>.<lang>.md` and declare the original with `translation_of`:
@@ -133,7 +133,88 @@ The repository ships working examples of every option above. Run the site and op
 | `direction`, `evidence`, `targets`, ghost nodes, dates | [_nodes/people/alice-example.md](_nodes/people/alice-example.md), [_nodes/organizations/acme-corp.md](_nodes/organizations/acme-corp.md), [_nodes/funds/example-fund.md](_nodes/funds/example-fund.md) |
 | Node translations (`translation_of`) | [_nodes/people/alice-example.tr.md](_nodes/people/alice-example.tr.md) |
 
-## 6. Starting Your Own Project from This Template
+## 6. Node Options
+
+Nodes are styled with optional front matter fields, placed next to `title` and `type`. Values are passed to Cytoscape.js ([node style reference](https://js.cytoscape.org/#style/node-body)). Invalid values are ignored with a warning in the browser console. Visual options are always read from the original file, not from translation files.
+
+```yaml
+---
+id: "acme-corp"
+title: "Acme Corp"
+type: "organization"
+shape: "round-hexagon"
+color: "#7c3aed"
+border_style: "dashed"
+border_width: 4
+label_position: "top"
+parent: "holding-group"
+---
+```
+
+### 6.1 Shape, size and color
+
+| Option | Values | Default | Definition |
+| --- | --- | --- | --- |
+| `shape` | `ellipse`, `triangle`, `round-triangle`, `rectangle`, `round-rectangle`, `bottom-round-rectangle`, `cut-rectangle`, `barrel`, `rhomboid`, `diamond`, `round-diamond`, `pentagon`, `round-pentagon`, `hexagon`, `round-hexagon`, `concave-hexagon`, `heptagon`, `round-heptagon`, `octagon`, `round-octagon`, `star`, `tag`, `round-tag`, `vee` | per type in `type_shapes`, else `nodes.default_shape` (`ellipse`) | Outline of the node. |
+| `color` | HEX / CSS color | per type in `type_colors`, else `nodes.default_color` | Fill color. |
+| `size_mode` | `auto`, `fixed` | `auto` | `auto` sizes the node by its number of connections, `fixed` uses `nodes.fixed_size`. |
+| `width`, `height` | number (px) | automatic size | Override the automatic size. Use different values for non-square nodes. |
+| `opacity` | `0` - `1` | `1` | Opacity of the whole node. |
+
+### 6.2 Border options
+
+| Option | Values | Default | Definition |
+| --- | --- | --- | --- |
+| `border_width` | number (px) | `2` | Border thickness. |
+| `border_color` | HEX / CSS color | `nodes.border_color` (`#38bdf8` when the node has an image) | Border color. |
+| `border_style` | `solid`, `dotted`, `dashed`, `double` | `solid` | Border pattern. `double` needs a `border_width` of about 6 or more to be visible. |
+
+### 6.3 Label options
+
+| Option | Values | Default | Definition |
+| --- | --- | --- | --- |
+| `label_position` | `top`, `center`, `bottom` | `bottom` | Where the title is drawn relative to the node. |
+| `label_color` | HEX / CSS color | `#f8fafc` | Text color. |
+| `label_size` | number (px) | `11` | Font size. |
+
+### 6.4 Image options
+
+| Option | Values | Default | Definition |
+| --- | --- | --- | --- |
+| `image` | URL or site path | none | Picture drawn inside the node and used as the sidebar cover. |
+| `image_fit` | `cover`, `contain`, `none` | `cover` | `cover` fills the node and crops, `contain` shows the whole image, `none` keeps the original size. |
+| `image_opacity` | `0` - `1` | `1` | Opacity of the image over the fill color. |
+
+### 6.5 Compound (group) nodes
+
+Set `parent` to the id of another node to draw the node inside it. The parent becomes a group box that is drawn around its children and labelled with its title. The parent can be a normal node file (it keeps its own relations and content) or an id without a file, which becomes a draft node. Do not make nodes parents of each other in a loop. Children without relations are arranged compactly inside the group.
+
+```yaml
+# _nodes/organizations/holding-group.md
+id: "holding-group"
+title: "Holding Group"
+type: "organization"
+
+# _nodes/organizations/subsidiary-a.md
+id: "subsidiary-a"
+title: "Subsidiary A"
+type: "organization"
+parent: "holding-group"
+```
+
+### 6.6 Global defaults
+
+In [_data/settings.yml](_data/settings.yml): `nodes.default_color`, `nodes.border_color`, `nodes.default_shape`, `nodes.min_size`, `nodes.max_size`, `nodes.fixed_size`, `type_colors` (color per `type`) and `type_shapes` (shape per `type`). A value set in a node's own front matter always wins.
+
+### 6.7 Examples
+
+| Capability | Example files |
+| --- | --- |
+| All 24 `shape` values and a compound (group) node with `parent` | [_nodes/examples/node-shapes-group.md](_nodes/examples/node-shapes-group.md) and its children in [_nodes/examples/shapes/](_nodes/examples/shapes/) |
+| `border_*`, `opacity`, `color`, `width`/`height`, `label_*`, `image_fit`, `image_opacity` | [_nodes/examples/node-styling-group.md](_nodes/examples/node-styling-group.md) and its children in [_nodes/examples/styling/](_nodes/examples/styling/) |
+| Per-type shapes and colors (`type_shapes`, `type_colors`) | Alice, Bob, Acme Corp, Example Fund and Launch Event in `_nodes/` |
+
+## 7. Starting Your Own Project from This Template
 1. Fork or use this repository as a template and set `baseurl` (and `title`) in [_config.yml](_config.yml).
 2. Delete the sample content: `_nodes/examples/`, `_nodes/people/*-example*`, `_nodes/organizations/acme-corp.md`, `_nodes/funds/example-fund.md`, `_nodes/events/launch-event.md` and the posts in `_posts/`.
 3. Add your own nodes as described above.

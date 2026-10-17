@@ -33,8 +33,18 @@ permalink: /forks/
       await window.I18n.ready;
       const I18n = window.I18n;
       const container = document.getElementById("forks-list");
+      // GitHub data is untrusted: escape it before building HTML strings
+      const esc = (str) => String(str).replace(/[&<>"']/g, c => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[c]));
+      // Only allow http(s) links
+      const safeUrl = (url) => /^https?:\/\//i.test(url) ? url : null;
       const showMessage = (key, color) => {
-        container.innerHTML = `<p style="color:${color};" data-i18n="${key}">${I18n.t(key)}</p>`;
+        const p = document.createElement("p");
+        p.style.color = color;
+        p.setAttribute("data-i18n", key);
+        p.textContent = I18n.t(key);
+        container.replaceChildren(p);
       };
 
       // Detect the name of the main repository (default: banabirsebepver/Relations)
@@ -66,9 +76,9 @@ permalink: /forks/
 
           // Use the custom domain (homepage) if the owner set one,
           // otherwise build the standard github.io address when GitHub Pages is enabled
-          const liveUrl = fork.homepage && fork.homepage.trim() !== "" 
-            ? fork.homepage 
-            : (fork.has_pages ? `https://${fork.owner.login}.github.io/${fork.name}/` : null);
+          const liveUrl = safeUrl(fork.homepage && fork.homepage.trim() !== ""
+            ? fork.homepage.trim()
+            : (fork.has_pages ? `https://${fork.owner.login}.github.io/${fork.name}/` : ""));
 
           const updatedDate = new Date(fork.pushed_at).toLocaleDateString(I18n.lang);
           const defaultDesc = fork.description || I18n.t("site_description");
@@ -76,22 +86,22 @@ permalink: /forks/
           card.innerHTML = `
             <div>
               <div class="fork-owner">
-                <img src="${fork.owner.avatar_url}&s=80" alt="${fork.owner.login}">
+                <img src="${esc(fork.owner.avatar_url)}&s=80" alt="${esc(fork.owner.login)}">
                 <div class="fork-owner-info">
-                  <h3 id="title-${fork.id}">${fork.name}</h3>
-                  <span>@${fork.owner.login}</span>
+                  <h3 id="title-${fork.id}">${esc(fork.name)}</h3>
+                  <span>@${esc(fork.owner.login)}</span>
                 </div>
               </div>
-              <p class="fork-desc" id="desc-${fork.id}">${defaultDesc}</p>
+              <p class="fork-desc" id="desc-${fork.id}">${esc(defaultDesc)}</p>
             </div>
             <div>
               <div class="fork-meta">
-                <span>⭐ ${I18n.t("stars", { count: fork.stargazers_count })}</span>
-                <span>🕒 ${I18n.t("last_updated", { date: updatedDate })}</span>
+                <span>⭐ ${esc(I18n.t("stars", { count: fork.stargazers_count }))}</span>
+                <span>🕒 ${esc(I18n.t("last_updated", { date: updatedDate }))}</span>
               </div>
               <div class="fork-actions">
-                <a href="${fork.html_url}" target="_blank" rel="noopener" class="btn-link btn-repo">${I18n.t("github_repo")}</a>
-                ${liveUrl ? `<a href="${liveUrl}" target="_blank" rel="noopener" class="btn-link btn-live">${I18n.t("view_network")} &rarr;</a>` : ''}
+                <a href="${esc(fork.html_url)}" target="_blank" rel="noopener" class="btn-link btn-repo">${esc(I18n.t("github_repo"))}</a>
+                ${liveUrl ? `<a href="${esc(liveUrl)}" target="_blank" rel="noopener" class="btn-link btn-live">${esc(I18n.t("view_network"))} &rarr;</a>` : ''}
               </div>
             </div>
           `;

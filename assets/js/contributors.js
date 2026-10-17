@@ -28,13 +28,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   let statusKey = null;
   const showStatus = (key) => {
     statusKey = key;
-    listContainer.innerHTML = `<small style='color:#64748b;'>${I18n.t(key)}</small>`;
+    const msg = document.createElement("small");
+    msg.style.color = "#64748b";
+    msg.textContent = I18n.t(key);
+    listContainer.replaceChildren(msg);
   };
 
   let contributorList = [];
   const render = () => {
     if (statusKey) return showStatus(statusKey);
-    listContainer.innerHTML = "";
+    listContainer.replaceChildren();
     contributorList.forEach(user => {
       const link = document.createElement("a");
       link.href = user.html_url;

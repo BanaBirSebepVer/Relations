@@ -4,7 +4,7 @@
 # To add a new language, copy this file to `_data/i18n/<code>.yml`
 # (e.g. `fr.yml`) and translate the values. Do NOT change the keys.
 # The language appears in the language switcher automatically.
-# Placeholders such as {count} or {login} must be kept as they are.
+# Translations are plain text: HTML is not allowed. Placeholders such as {count} or {login} must be kept as they are.
 
 language_name: "English"   # Shown in the language switcher (write it in the language itself)
 dir: "ltr"                 # Text direction: "ltr" or "rtl"
@@ -26,7 +26,8 @@ contribution_count: "{login} ({count} contributions)"
 
 # Sidebar
 no_details: "No details found."
-ghost_content: "This node has not been detailed yet.<br><br>To contribute, add <strong>{id}.md</strong> to the <code>_nodes/</code> directory."
+ghost_content: "This node has not been detailed yet."
+ghost_hint: "To contribute, add the file {file} to the _nodes/ directory."
 ghost_status: "Status: draft node, no file has been created yet"
 open_page: "Open on a separate page / view source"
 related_news: "Related developments"

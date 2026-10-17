@@ -6,6 +6,7 @@ A ready-to-use template for building your own relationship network. An open sour
 - **Managed with Markdown and front matter:** No database needed; every node is an independent `.md` file.
 - **Dynamic network analysis:** Node sizing by degree centrality, direction arrows and line styles based on the evidence level.
 - **Full Cytoscape.js edge styling:** Labels, all curve styles, all arrow shapes and line styles per relation. See [CONTRIBUTING.md](CONTRIBUTING.md#5-edge-options) and the examples in `_nodes/examples/`.
+- **Full Cytoscape.js node styling:** All node shapes, borders, label placement, image fitting and compound (group) nodes. See [CONTRIBUTING.md](CONTRIBUTING.md#6-node-options).
 - **80% detail sidebar:** Clicking an actor dims all unrelated actors and opens an in-depth file view.
 - **Ghost node support:** Actors without a file do not break the graph; they are listed as drafts.
 - **Multilingual:** English and Turkish are built in. Anyone can add a language by adding one file (see below).
