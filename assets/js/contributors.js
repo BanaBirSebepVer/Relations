@@ -1,13 +1,16 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const listContainer = document.getElementById("contributors-list");
   if (!listContainer) return;
 
-  // 1. Repo adını belirle (Önce manuel ayara bak, yoksa URL'den otomatik çıkar)
+  await window.I18n.ready;
+  const I18n = window.I18n;
+
+  // 1. Determine the repository (manual setting first, otherwise infer from the URL)
   let repo = window.GITHUB_REPO;
 
   if (!repo || repo.trim() === "") {
-    const host = window.location.hostname; // Örn: banabirsebepver.github.io
-    const pathParts = window.location.pathname.split('/').filter(Boolean); // Örn: ["Relations"]
+    const host = window.location.hostname; // e.g. banabirsebepver.github.io
+    const pathParts = window.location.pathname.split('/').filter(Boolean); // e.g. ["Relations"]
 
     if (host.endsWith(".github.io")) {
       const owner = host.split(".")[0];
@@ -16,48 +19,57 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Yerel (localhost) çalışmada veya repo bulunamadığında varsayılan repo:
+  // Default repository for local development or when no repository is found:
   if (!repo) {
     repo = "banabirsebepver/Relations";
   }
 
-  // 2. GitHub API'den katkıcıları çek
+  // The message is re-translated when the language changes
+  let statusKey = null;
+  const showStatus = (key) => {
+    statusKey = key;
+    listContainer.innerHTML = `<small style='color:#64748b;'>${I18n.t(key)}</small>`;
+  };
+
+  let contributorList = [];
+  const render = () => {
+    if (statusKey) return showStatus(statusKey);
+    listContainer.innerHTML = "";
+    contributorList.forEach(user => {
+      const link = document.createElement("a");
+      link.href = user.html_url;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.className = "contributor-item";
+      link.title = I18n.t("contribution_count", { login: user.login, count: user.contributions });
+
+      const img = document.createElement("img");
+      // Request 64px avatars for performance
+      img.src = `${user.avatar_url}&s=64`;
+      img.alt = user.login;
+      img.className = "contributor-avatar";
+
+      link.appendChild(img);
+      listContainer.appendChild(link);
+    });
+  };
+  document.addEventListener("i18n:change", render);
+
+  // 2. Fetch contributors from the GitHub API
   fetch(`https://api.github.com/repos/${repo}/contributors`)
     .then(response => {
-      if (!response.ok) throw new Error("API yanıt vermedi");
+      if (!response.ok) throw new Error("The API did not respond");
       return response.json();
     })
     .then(contributors => {
-      if (!Array.isArray(contributors) || contributors.length === 0) {
-        listContainer.innerHTML = "<small style='color:#64748b;'>Henüz katkıcı bulunmuyor.</small>";
-        return;
-      }
-
-      listContainer.innerHTML = ""; // Önceki içeriği temizle
-
-      contributors.forEach(user => {
-        // GitHub botlarını (örn: github-actions[bot]) listeden hariç tut
-        if (user.type === "Bot") return;
-
-        const link = document.createElement("a");
-        link.href = user.html_url;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.className = "contributor-item";
-        link.title = `${user.login} (${user.contributions} katkı)`;
-
-        const img = document.createElement("img");
-        // Performans için avatarları 64px boyutunda çekiyoruz
-        img.src = `${user.avatar_url}&s=64`;
-        img.alt = user.login;
-        img.className = "contributor-avatar";
-
-        link.appendChild(img);
-        listContainer.appendChild(link);
-      });
+      // Exclude GitHub bots (e.g. github-actions[bot])
+      contributorList = Array.isArray(contributors) ? contributors.filter(u => u.type !== "Bot") : [];
+      if (contributorList.length === 0) return showStatus("no_contributors");
+      statusKey = null;
+      render();
     })
     .catch(err => {
-      console.warn("Katkıcılar yüklenemedi:", err);
-      listContainer.innerHTML = "<small style='color:#64748b;'>Katkıcı listesi yüklenemedi.</small>";
+      console.warn("Contributors could not be loaded:", err);
+      showStatus("contributors_failed");
     });
 });

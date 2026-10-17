@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="tr">
+{% include view/i18n-setup.html %}<!DOCTYPE html>
+<html lang="{{ page_lang }}" dir="{{ page_dir }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,40 +63,52 @@
       background: #38bdf8;
       color: #0f172a;
     }
+      .lang-links { margin-bottom: 16px; font-size: 13px; }
+    .lang-links a.lang-link { margin-right: 12px; color: #94a3b8; text-decoration: none; }
+    .lang-links a.lang-link:hover { color: #38bdf8; }
   </style>
 </head>
 <body>
   <div class="post-page">
-    <a href="{{ '/' | relative_url }}" class="back-btn">&larr; Ağ Haritasına Dön</a>
+    <a href="{{ '/' | relative_url }}" class="back-btn">&larr; {{ t.back_to_graph | default: fb.back_to_graph }}</a>
+    {% include view/language-links.html collection="posts" %}
     
     <h1>{{ page.title }}</h1>
     <div class="meta">
-      <i class="fa fa-calendar"></i> Yayınlanma: {{ page.date | date: "%d.%m.%Y" }}
+      <i class="fa fa-calendar"></i> {{ t.published | default: fb.published }} {{ page.date | date: t.date_format }}
     </div>
     
     <hr style="border:0; height:1px; background:#1e293b; margin-bottom:32px;">
     
-    <!-- Haberin İçeriği -->
+    <!-- Post content -->
     <div class="content">
       {{ content }}
     </div>
 
-    <!-- Haberin İlgili Olduğu Düğümler (Aktörler / Fonlar) -->
+    <!-- Nodes (actors / funds) this post relates to -->
     {% if page.related_nodes and page.related_nodes.size > 0 %}
     <div class="related-nodes-box">
-      <h3>İlgili Aktörler ve Kurumlar</h3>
+      <h3>{{ t.related_actors | default: fb.related_actors }}</h3>
       <div>
         {% for node_id in page.related_nodes %}
-          {% assign matched_node = site.nodes | where: "id", node_id | first %}
-          {% unless matched_node %}
-            {% assign matched_node = site.nodes | where: "slug", node_id | first %}
-          {% endunless %}
+          {% assign matched_node = nil %}
+          {% for candidate in site.nodes %}
+            {% assign candidate_lang = candidate.lang | default: site.default_lang %}
+            {% assign candidate_base = candidate.translation_of | default: candidate.slug %}
+            {% if candidate_base == node_id %}
+              {% if candidate_lang == page_lang %}
+                {% assign matched_node = candidate %}
+              {% elsif matched_node == nil and candidate.translation_of == nil %}
+                {% assign matched_node = candidate %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
           {% if matched_node %}
             <a href="{{ matched_node.url | relative_url }}" class="node-tag">
               {{ matched_node.title | default: node_id }} &rarr;
             </a>
           {% else %}
-            <span class="node-tag" style="color:#94a3b8; cursor:not-allowed;">{{ node_id }} (Taslak)</span>
+            <span class="node-tag" style="color:#94a3b8; cursor:not-allowed;">{{ node_id }} ({{ t.draft_label | default: fb.draft_label }})</span>
           {% endif %}
         {% endfor %}
       </div>

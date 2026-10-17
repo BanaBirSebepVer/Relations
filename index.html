@@ -4,35 +4,29 @@ layout: null
 {% include view/head.html %}
 <body>
 
-  <!-- Üst Menü & Kontroller -->
+  <!-- Top bar and controls -->
   <header id="top-bar">
     <div class="brand">
-      <h1>{{ site.title }}</h1>
+      <h1 data-i18n="site_title">{{ site.title }}</h1>
     </div>
-    
+
     <div class="controls">
-      <input type="text" id="search-input" placeholder="Düğüm ara (İsim, ID)...">
+      <input type="text" id="search-input" data-i18n-placeholder="search_placeholder">
       <select id="type-filter">
-        <option value="ALL">Tüm Tipler</option>
-      </select>
-      
-      <!-- Çoklu Dil Seçici -->
-      <select id="lang-switcher">
-        <option value="tr">🇹🇷 TR</option>
-        <option value="en">🇬🇧 EN</option>
-        <option value="fr">🇫🇷 FR</option>
-        <option value="de">🇩🇪 DE</option>
-        <option value="ru">🇷🇺 RU</option>
+        <option value="ALL"></option>
       </select>
 
-      <button id="reset-view-btn">Merkeze Al</button>
+      <!-- Language switcher (options are generated from _data/i18n/*.yml) -->
+      <select id="lang-switcher" data-i18n-title="language_label" aria-label="Language"></select>
+
+      <button id="reset-view-btn" data-i18n="reset_view"></button>
     </div>
   </header>
 
-  <!-- Grafiğin Çizileceği Alan -->
+  <!-- Area where the graph is drawn -->
   <main id="cy"></main>
 
-  <!-- %80 Kapsayan Detay Sidebar'ı -->
+  <!-- Detail sidebar covering 80% of the screen -->
   <aside id="sidebar" class="hidden">
     <div class="sidebar-header">
       <button id="close-sidebar-btn">&times;</button>
@@ -50,15 +44,15 @@ layout: null
 
   {% include view/footer.html %}
 
-  <!-- Göreceli JS ve Veri Yolları -->
+  <!-- Data paths relative to the base URL -->
   <script>
     window.GRAPH_DATA_URL = "{{ '/api/graph.json' | relative_url }}";
-    window.GITHUB_REPO = ""; 
+    window.I18N_URL = "{{ '/api/i18n.json' | relative_url }}";
+    window.GITHUB_REPO = "";
   </script>
+  <script src="{{ '/assets/js/i18n.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/contributors.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/app.js' | relative_url }}"></script>
-
-  
 
 </body>
 </html>

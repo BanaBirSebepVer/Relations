@@ -1,0 +1,9 @@
+{% comment %}
+  Resolves the language of a static page (node or post).
+  Sets: page_lang, t (strings of the page language), fb (fallback strings of default_lang).
+  Usage in templates: {{ t.key | default: fb.key }}
+{% endcomment %}
+{% assign page_lang = page.lang | default: site.default_lang %}
+{% assign t = site.data.i18n[page_lang] %}
+{% assign fb = site.data.i18n[site.default_lang] %}
+{% assign page_dir = t.dir | default: "ltr" %}

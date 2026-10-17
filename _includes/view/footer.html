@@ -1,53 +1,13 @@
-<!-- Katkıcılar ve Forklar Alanı (Footer) -->
-  <footer id="contributors-bar" style="justify-content: space-between;">
-    <div style="display: flex; align-items: center; gap: 12px;">
-      <span>Katkıda Bulunanlar:</span>
-      <div id="contributors-list"></div>
-    </div>
-    
-    <div>
-      <a href="{{ '/forks/' | relative_url }}" style="color: #38bdf8; text-decoration: none; font-weight: 500; font-size: 13px;">
-        🌐 Topluluk Ağlarını (Forks) Keşfet &rarr;
-      </a>
-    </div>
-  </footer>
+<!-- Contributors and forks area (footer) -->
+<footer id="contributors-bar" style="justify-content: space-between;">
+  <div style="display: flex; align-items: center; gap: 12px;">
+    <span data-i18n="contributors_label"></span>
+    <div id="contributors-list"></div>
+  </div>
 
-  <!-- ========================================== -->
-  <!-- GOOGLE TRANSLATE ENTEGRASYONU -->
-  <!-- ========================================== -->
-  <div id="google_translate_element"></div>
-
-  <script type="text/javascript">
-    function googleTranslateElementInit() {
-      new google.translate.TranslateElement({
-        pageLanguage: 'tr', // Sitenin ana dili
-        autoDisplay: false
-      }, 'google_translate_element');
-
-      // Özel menümüz ile Google Çeviri menüsünü birbirine bağlıyoruz
-      setTimeout(function() {
-        var langSelect = document.getElementById('lang-switcher');
-        if (langSelect) {
-          langSelect.addEventListener('change', function(e) {
-            var targetLang = e.target.value;
-            var googleCombo = document.querySelector(".goog-te-combo");
-            
-            if (googleCombo) {
-              googleCombo.value = targetLang;
-              // Google script'inin değişikliği algılaması için olayı tetikliyoruz
-              if (document.createEvent) {
-                var event = document.createEvent('HTMLEvents');
-                event.initEvent('change', true, true);
-                googleCombo.dispatchEvent(event);
-              } else {
-                var event = document.createEventObject();
-                event.eventType = 'change';
-                googleCombo.fireEvent('on' + event.eventType, event);
-              }
-            }
-          });
-        }
-      }, 1000); // Google bileşeninin DOM'a yüklenmesi için ufak bir gecikme
-    }
-  </script>
-  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+  <div>
+    <a href="{{ '/forks/' | relative_url }}" style="color: #38bdf8; text-decoration: none; font-weight: 500; font-size: 13px;">
+      🌐 <span data-i18n="explore_forks"></span> &rarr;
+    </a>
+  </div>
+</footer>

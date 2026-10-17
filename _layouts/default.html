@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<html lang="tr">
+{% include view/i18n-setup.html %}<!DOCTYPE html>
+<html lang="{{ page_lang }}" dir="{{ page_dir }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,36 +29,42 @@
       text-decoration: none;
       font-weight: 500;
     }
+      .lang-links { margin-bottom: 16px; font-size: 13px; }
+    .lang-links a.lang-link { margin-right: 12px; color: #94a3b8; text-decoration: none; }
+    .lang-links a.lang-link:hover { color: #38bdf8; }
   </style>
 </head>
 <body>
   <div class="standalone-page">
-    <a href="{{ '/' | relative_url }}" class="back-btn">&larr; Ağ Haritasına Dön</a>
+    <a href="{{ '/' | relative_url }}" class="back-btn">&larr; {{ t.back_to_graph | default: fb.back_to_graph }}</a>
+    {% include view/language-links.html collection="nodes" %}
     {% if page.image %}
       <img src="{{ page.image }}" style="width:100%; max-height:360px; object-fit:cover; border-radius:8px; margin-bottom:24px;">
     {% endif %}
     <h1>{{ page.title }}</h1>
-    <span style="display:inline-block; padding:4px 8px; background:#1e293b; color:#38bdf8; border-radius:4px; font-size:12px; margin-bottom:24px; text-transform:uppercase;">{{ page.type }}</span>
+    <span style="display:inline-block; padding:4px 8px; background:#1e293b; color:#38bdf8; border-radius:4px; font-size:12px; margin-bottom:24px; text-transform:uppercase;">{{ t.type[page.type] | default: page.type }}</span>
     <hr style="border:0; height:1px; background:#1e293b; margin-bottom:24px;">
     <div class="content">
       {{ content }}
     </div>
     
     <hr>
-    <h3>Son Gelişmeler ve Haberler</h3>
+    <h3>{{ t.recent_news | default: fb.recent_news }}</h3>
     <ul>
       {% assign has_related_posts = false %}
       {% for post in site.posts %}
-        {% if post.related_nodes contains page.id or post.related_nodes contains page.slug %}
+        {% assign post_lang = post.lang | default: site.default_lang %}
+        {% assign node_base = page.translation_of | default: page.slug %}
+        {% if post_lang == page_lang and post.related_nodes contains node_base %}
           {% assign has_related_posts = true %}
           <li>
             <a href="{{ post.url | relative_url }}">{{ post.title }}</a> 
-            <small>({{ post.date | date: "%d.%m.%Y" }})</small>
+            <small>({{ post.date | date: t.date_format }})</small>
           </li>
         {% endif %}
       {% endfor %}
       {% unless has_related_posts %}
-        <p>Henüz bu kişi/kurum hakkında bir gelişme eklenmemiş.</p>
+        <p>{{ t.no_related_posts | default: fb.no_related_posts }}</p>
       {% endunless %}
     </ul>
   </div>

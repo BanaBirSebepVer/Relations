@@ -41,7 +41,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: "_site"    # DİKKAT: Bu satır eklenmeli! Derlenen doğru klasörü yüklemesini garanti eder.
+          path: "_site"    # Ensures the built folder is uploaded
 
   deploy:
     environment:

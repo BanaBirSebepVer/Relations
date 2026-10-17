@@ -1,35 +1,35 @@
 # ==========================================
-# GRAFİK VE ARAYÜZ AYARLARI
+# GRAPH AND UI SETTINGS
 # ==========================================
 
-# Ağ Fizik ve Yerleşim Parametreleri
+# Network physics and layout parameters
 layout:
-  name: "fcose"           # "fcose" veya "cose"
-  node_repulsion: 4500    # Düğümlerin birbirini itme gücü (dağılma mesafesi)
-  ideal_edge_length: 100  # Bağlantı çizgilerinin ideal uzunluğu
-  gravity: 0.25           # Merkeze çekim kuvveti
+  name: "fcose"           # "fcose" or "cose"
+  node_repulsion: 4500    # How strongly nodes push each other away (spread distance)
+  ideal_edge_length: 100  # Ideal length of connection lines
+  gravity: 0.25           # Pull towards the center
 
-# Düğüm Varsayılanları
+# Node defaults
 nodes:
   default_color: "#0284c7"
   border_color: "#0f172a"
-  ghost_color: "#475569"  # Henüz dosyası olmayan taslak düğümlerin rengi
-  min_size: 32            # En az bağlantısı olanın boyutu
-  max_size: 84            # En çok bağlantısı olanın tavan boyutu
-  fixed_size: 36          # size_mode: fixed olanların boyutu
+  ghost_color: "#475569"  # Color of draft nodes that have no file yet
+  min_size: 32            # Size of the node with the fewest connections
+  max_size: 84            # Maximum size for the node with the most connections
+  fixed_size: 36          # Size of nodes with size_mode: fixed
 
-# Bağlantı (Edge) Varsayılanları
+# Edge defaults
 edges:
   default_color: "#64748b"
   highlight_color: "#38bdf8"
   min_width: 1
   max_width: 6
 
-# Kategori (Type) Bazlı Renk Eşleşmeleri
-# (Front-matter'da özel HEX kodu belirtilmediğinde devreye girer)
+# Colors per category (type)
+# (Used when no custom HEX color is set in the front matter)
 type_colors:
-  person: "#d97706"       # Kişiler için turuncu/kehribar
-  fund: "#2563eb"         # Fonlar için mavi
-  organization: "#9333ea" # Kurumlar için mor
-  event: "#dc2626"        # Olaylar için kırmızı
-  taslak: "#475569"       # Hayalet düğümler için gri
+  person: "#d97706"       # Orange/amber for people
+  fund: "#2563eb"         # Blue for funds
+  organization: "#9333ea" # Purple for organizations
+  event: "#dc2626"        # Red for events
+  ghost: "#475569"        # Gray for ghost nodes

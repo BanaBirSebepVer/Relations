@@ -4,43 +4,45 @@ permalink: /api/graph.json
 ---
 {% assign all_nodes = site.nodes %}
 {% assign settings = site.data.settings %}
+{% comment %}
+  Every node file is emitted as one "variant". Files that translate another node
+  declare `translation_of: <slug of the original>` and share its graph id.
+  The browser picks the variant that matches the selected language.
+  Relations and news are only read from original (non-translation) files.
+{% endcomment %}
 {
   "settings": {{ settings | jsonify }},
+  "default_lang": {{ site.default_lang | jsonify }},
   "nodes": [
     {% for node in all_nodes %}
-      
-      {% capture node_news %}
-        {% assign has_news = false %}
+      {% assign node_id = node.translation_of | default: node.slug %}
+      {% assign news_items = "" | split: "" %}
+      {% unless node.translation_of %}
         {% for post in site.posts %}
-          {% if post.related_nodes contains node.slug or post.related_nodes contains node.id %}
-            {% if has_news == false %}
-              {% assign has_news = true %}
-              <br><hr>
-              <h4>İlgili Gelişmeler</h4>
-              <ul style="margin-left:20px; font-size:14px; padding-left: 10px;">
-            {% endif %}
-            <li style="margin-bottom: 8px;">
-              <a href="{{ post.url | relative_url }}" target="_blank" style="color: #38bdf8; text-decoration: none;">
-                {{ post.title }}
-              </a>
-            </li>
+          {% if post.related_nodes contains node.slug %}
+            {% capture news_item %}{
+              "title": {{ post.title | jsonify }},
+              "url": {{ post.url | relative_url | jsonify }},
+              "lang": {{ post.lang | default: site.default_lang | jsonify }},
+              "ref": {{ post.translation_of | default: post.slug | jsonify }}
+            }{% endcapture %}
+            {% assign news_items = news_items | push: news_item %}
           {% endif %}
         {% endfor %}
-        {% if has_news %}
-          </ul>
-        {% endif %}
-      {% endcapture %}
-
+      {% endunless %}
       {
         "data": {
-          "id": {{ node.slug | jsonify }},
+          "id": {{ node_id | jsonify }},
+          "lang": {{ node.lang | default: site.default_lang | jsonify }},
+          "is_translation": {% if node.translation_of %}true{% else %}false{% endif %},
           "label": {{ node.title | default: node.slug | jsonify }},
           "type": {{ node.type | default: "generic" | jsonify }},
           "color": {{ node.color | default: "" | jsonify }},
           "image": {{ node.image | default: "" | jsonify }},
           "size_mode": {{ node.size_mode | default: "auto" | jsonify }},
           "url": {{ node.url | relative_url | jsonify }},
-          "content": {{ node.content | append: node_news | jsonify }}
+          "content": {{ node.content | jsonify }},
+          "news": [{{ news_items | join: "," }}]
         }
       }{% unless forloop.last %},{% endunless %}
     {% endfor %}
@@ -48,45 +50,28 @@ permalink: /api/graph.json
   "edges": [
     {% assign edge_list = "" | split: "" %}
     {% for node in all_nodes %}
-      {% if node.relations %}
+      {% if node.relations and node.translation_of == nil %}
         {% for rel in node.relations %}
-          {% if rel.targets %}
-            {% for t in rel.targets %}
-              {% capture edge_item %}
-                {
-                  "data": {
-                    "source": {{ node.slug | jsonify }},
-                    "target": {{ t | jsonify }},
-                    "label": {{ rel.type | default: "" | jsonify }},
-                    "weight": {{ rel.weight | default: 1 | jsonify }},
-                    "evidence": {{ rel.evidence | default: "belgeli" | jsonify }},
-                    "direction": {{ rel.direction | default: "auto" | jsonify }},
-                    "edge_color": {{ rel.edge_color | default: "" | jsonify }},
-                    "start_date": {{ rel.start_date | default: "" | jsonify }},
-                    "end_date": {{ rel.end_date | default: "" | jsonify }}
-                  }
-                }
-              {% endcapture %}
-              {% assign edge_list = edge_list | push: edge_item %}
-            {% endfor %}
-          {% elsif rel.target %}
-            {% capture edge_item %}
-              {
-                "data": {
-                  "source": {{ node.slug | jsonify }},
-                  "target": {{ rel.target | jsonify }},
-                  "label": {{ rel.type | default: "" | jsonify }},
-                  "weight": {{ rel.weight | default: 1 | jsonify }},
-                  "evidence": {{ rel.evidence | default: "belgeli" | jsonify }},
-                  "direction": {{ rel.direction | default: "auto" | jsonify }},
-                  "edge_color": {{ rel.edge_color | default: "" | jsonify }},
-                  "start_date": {{ rel.start_date | default: "" | jsonify }},
-                  "end_date": {{ rel.end_date | default: "" | jsonify }}
-                }
-              }
-            {% endcapture %}
-            {% assign edge_list = edge_list | push: edge_item %}
+          {% assign rel_targets = rel.targets %}
+          {% if rel.target %}
+            {% assign rel_targets = rel.target | split: "|" %}
           {% endif %}
+          {% for t in rel_targets %}
+            {% capture edge_item %}{
+              "data": {
+                "source": {{ node.slug | jsonify }},
+                "target": {{ t | jsonify }},
+                "label": {{ rel.type | default: "" | jsonify }},
+                "weight": {{ rel.weight | default: 1 | jsonify }},
+                "evidence": {{ rel.evidence | default: "documented" | jsonify }},
+                "direction": {{ rel.direction | default: "auto" | jsonify }},
+                "edge_color": {{ rel.edge_color | default: "" | jsonify }},
+                "start_date": {{ rel.start_date | default: "" | jsonify }},
+                "end_date": {{ rel.end_date | default: "" | jsonify }}
+              }
+            }{% endcapture %}
+            {% assign edge_list = edge_list | push: edge_item %}
+          {% endfor %}
         {% endfor %}
       {% endif %}
     {% endfor %}

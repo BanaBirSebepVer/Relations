@@ -5,12 +5,13 @@ type: "fund"
 color: "#2563eb"
 image: "https://images.unsplash.com/photo-1559526324-4b87b5e36e44?w=300"
 size_mode: "auto"
+lang: "tr"
 
 relations:
   - target: "fatma-yilmaz"
-    type: "kurucu_ortak"
+    type: "co_founder"
     weight: 5
-    evidence: "resmi_tutanak"
+    evidence: "official_record"
     direction: "directed"
     edge_color: "#ef4444"
     start_date: "2021-03"
@@ -19,9 +20,9 @@ relations:
   - targets:
       - "mehmet-oz"
       - "z-bankasi"
-    type: "yatirimci"
+    type: "investor"
     weight: 3
-    evidence: "belgeli"
+    evidence: "documented"
     direction: "directed"
     edge_color: "#3b82f6"
 ---

@@ -3,32 +3,41 @@ layout: null
 permalink: /forks/
 ---
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ site.default_lang }}">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Topluluk Ağları (Forks) | {{ site.title }}</title>
+  <title>{{ site.title }}</title>
   <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
 </head>
-<body class="forks-page">
+<body class="forks-page" data-title-key="forks_page_title">
 
   <div class="forks-container">
     <div class="header-box">
-      <a href="{{ '/' | relative_url }}" class="back-btn">&larr; Ağ Haritasına Dön</a>
-      <h1>Topluluk Tarafından Geliştirilen Ağlar</h1>
-      <p>Bu açık kaynaklı altyapıyı forklayarak kendi araştırma ve ilişki ağlarını oluşturan projeler.</p>
+      <a href="{{ '/' | relative_url }}" class="back-btn">&larr; <span data-i18n="back_to_graph"></span></a>
+      <select id="lang-switcher" data-i18n-title="language_label" aria-label="Language"></select>
+      <h1 data-i18n="forks_heading"></h1>
+      <p data-i18n="forks_intro"></p>
     </div>
 
     <div id="forks-list" class="forks-grid">
-      <p style="color: #94a3b8;">Projeler GitHub üzerinden yükleniyor...</p>
+      <p style="color: #94a3b8;" data-i18n="forks_loading"></p>
     </div>
   </div>
 
+  <script>window.I18N_URL = "{{ '/api/i18n.json' | relative_url }}";</script>
+  <script src="{{ '/assets/js/i18n.js' | relative_url }}"></script>
+
   <script>
     document.addEventListener("DOMContentLoaded", async () => {
+      await window.I18n.ready;
+      const I18n = window.I18n;
       const container = document.getElementById("forks-list");
+      const showMessage = (key, color) => {
+        container.innerHTML = `<p style="color:${color};" data-i18n="${key}">${I18n.t(key)}</p>`;
+      };
 
-      // Mevcut ana deponun adını tespit et (veya varsayılan olarak banabirsebepver/Relations kullan)
+      // Detect the name of the main repository (default: banabirsebepver/Relations)
       let mainRepo = "banabirsebepver/Relations";
       const host = window.location.hostname;
       const pathParts = window.location.pathname.split('/').filter(Boolean);
@@ -39,13 +48,13 @@ permalink: /forks/
       }
 
       try {
-        // GitHub API'den fork listesini çek (En çok yıldız alana göre sıralı, maksimum 100 adet)
+        // Fetch the fork list from the GitHub API (sorted by stars, max 100)
         const res = await fetch(`https://api.github.com/repos/${mainRepo}/forks?sort=stargazers&per_page=100`);
-        if (!res.ok) throw new Error("API hatası");
+        if (!res.ok) throw new Error("API error");
         const forks = await res.json();
 
         if (!Array.isArray(forks) || forks.length === 0) {
-          container.innerHTML = "<p style='color:#64748b;'>Henüz forklanmış bir proje bulunmuyor. İlk forklayan siz olun!</p>";
+          showMessage("forks_empty", "#64748b");
           return;
         }
 
@@ -55,14 +64,14 @@ permalink: /forks/
           const card = document.createElement("div");
           card.className = "fork-card";
 
-          // Eğer kullanıcı kendi özel domainini (homepage) girdiyse onu al, 
-          // girmediyse ama GitHub Pages açıksa standart github.io adresini oluştur
+          // Use the custom domain (homepage) if the owner set one,
+          // otherwise build the standard github.io address when GitHub Pages is enabled
           const liveUrl = fork.homepage && fork.homepage.trim() !== "" 
             ? fork.homepage 
             : (fork.has_pages ? `https://${fork.owner.login}.github.io/${fork.name}/` : null);
 
-          const updatedDate = new Date(fork.pushed_at).toLocaleDateString("tr-TR");
-          const defaultDesc = fork.description || "Açık Kaynak İlişki ve Ağ Haritalama Platformu";
+          const updatedDate = new Date(fork.pushed_at).toLocaleDateString(I18n.lang);
+          const defaultDesc = fork.description || I18n.t("site_description");
 
           card.innerHTML = `
             <div>
@@ -77,19 +86,19 @@ permalink: /forks/
             </div>
             <div>
               <div class="fork-meta">
-                <span>⭐ ${fork.stargazers_count} Yıldız</span>
-                <span>🕒 Son Güncelleme: ${updatedDate}</span>
+                <span>⭐ ${I18n.t("stars", { count: fork.stargazers_count })}</span>
+                <span>🕒 ${I18n.t("last_updated", { date: updatedDate })}</span>
               </div>
               <div class="fork-actions">
-                <a href="${fork.html_url}" target="_blank" rel="noopener" class="btn-link btn-repo">GitHub Deposu</a>
-                ${liveUrl ? `<a href="${liveUrl}" target="_blank" rel="noopener" class="btn-link btn-live">Ağı İncele &rarr;</a>` : ''}
+                <a href="${fork.html_url}" target="_blank" rel="noopener" class="btn-link btn-repo">${I18n.t("github_repo")}</a>
+                ${liveUrl ? `<a href="${liveUrl}" target="_blank" rel="noopener" class="btn-link btn-live">${I18n.t("view_network")} &rarr;</a>` : ''}
               </div>
             </div>
           `;
 
           container.appendChild(card);
 
-          // EKSTRA ÖZELLİK: Forklayan kişinin kendi _config.yml dosyasındaki özel "title" (Başlık) bilgisini çek
+          // Extra: read the custom "title" and "description" from the fork's own _config.yml
           fetch(`https://raw.githubusercontent.com/${fork.full_name}/${fork.default_branch}/_config.yml`)
             .then(r => r.ok ? r.text() : null)
             .then(yamlText => {
@@ -104,11 +113,11 @@ permalink: /forks/
                 document.getElementById(`desc-${fork.id}`).textContent = descMatch[1].trim();
               }
             })
-            .catch(() => {}); // Hata olursa varsayılan repo adını korur
+            .catch(() => {}); // On error keep the default repository name
         }
       } catch (err) {
         console.error(err);
-        container.innerHTML = "<p style='color:#ef4444;'>Projeler yüklenirken bir hata oluştu veya GitHub API limitine takıldı.</p>";
+        showMessage("forks_error", "#ef4444");
       }
     });
   </script>

@@ -1,0 +1,8 @@
+---
+layout: null
+permalink: /api/i18n.json
+---
+{
+  "default_lang": {{ site.default_lang | jsonify }},
+  "languages": {{ site.data.i18n | jsonify }}
+}

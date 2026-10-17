@@ -1,0 +1,53 @@
+# ==========================================
+# UI TRANSLATIONS - TURKISH
+# ==========================================
+# See en.yml for instructions on adding a new language.
+
+language_name: "Türkçe"
+dir: "ltr"
+date_format: "%d.%m.%Y"
+
+site_title: "Araştırmacı İlişki Ağı"
+site_description: "Açık Kaynak İlişki ve Ağ Haritalama Platformu"
+
+search_placeholder: "Düğüm ara (İsim, ID)..."
+all_types: "Tüm Tipler"
+reset_view: "Merkeze Al"
+language_label: "Dil"
+contributors_label: "Katkıda Bulunanlar:"
+explore_forks: "Topluluk Ağlarını (Forks) Keşfet"
+no_contributors: "Henüz katkıcı bulunmuyor."
+contributors_failed: "Katkıcı listesi yüklenemedi."
+contribution_count: "{login} ({count} katkı)"
+
+no_details: "Detay bulunamadı."
+ghost_content: "Bu düğüm henüz detaylandırılmamıştır.<br><br>Katkıda bulunmak için <code>_nodes/</code> dizinine <strong>{id}.md</strong> ekleyebilirsiniz."
+ghost_status: "Durum: Henüz dosyası açılmamış taslak düğüm"
+open_page: "Ayrı Sayfada Aç / Kaynağı İncele"
+related_news: "İlgili Gelişmeler"
+
+forks_page_title: "Topluluk Ağları (Forks)"
+back_to_graph: "Ağ Haritasına Dön"
+forks_heading: "Topluluk Tarafından Geliştirilen Ağlar"
+forks_intro: "Bu açık kaynaklı altyapıyı forklayarak kendi araştırma ve ilişki ağlarını oluşturan projeler."
+forks_loading: "Projeler GitHub üzerinden yükleniyor..."
+forks_empty: "Henüz forklanmış bir proje bulunmuyor. İlk forklayan siz olun!"
+forks_error: "Projeler yüklenirken bir hata oluştu veya GitHub API limitine takıldı."
+stars: "{count} Yıldız"
+last_updated: "Son Güncelleme: {date}"
+github_repo: "GitHub Deposu"
+view_network: "Ağı İncele"
+
+recent_news: "Son Gelişmeler ve Haberler"
+no_related_posts: "Henüz bu kişi/kurum hakkında bir gelişme eklenmemiş."
+published: "Yayınlanma:"
+related_actors: "İlgili Aktörler ve Kurumlar"
+draft_label: "Taslak"
+
+type:
+  person: "Kişi"
+  fund: "Fon"
+  organization: "Kurum"
+  event: "Olay"
+  ghost: "Taslak"
+  generic: "Genel"

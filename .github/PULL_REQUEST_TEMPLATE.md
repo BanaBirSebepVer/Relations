@@ -1,11 +1,15 @@
-### 📌 Eklenen / Güncellenen Düğüm Bilgileri
-- **Düğüm ID (Dosya Adı):** `ornek-dugum`
-- **Varlık Türü (`type`):** (Örn: person, organization, event, vb.)
+### 📌 Added / Updated Node Information
+- **Node ID (file name):** `example-node`
+- **Entity type (`type`):** (e.g. person, organization, event)
+- **Language (`lang`):** (e.g. en, tr; for translations also `translation_of`)
 
-### 🔗 Tanımlanan İlişkiler
-- [ ] Dosya adı ve `id` değeri birbiriyle birebir aynı mı?
-- [ ] Eklenen tüm `target` ve `targets` ID'lerinin formatı küçük harf ve tireli mi?
-- [ ] Bağlantılarda `weight` (1-5) ve `evidence` alanları tanımlandı mı?
+### 🔗 Defined Relations
+- [ ] Do the file name and the `id` value match exactly?
+- [ ] Are all added `target` and `targets` IDs lowercase and hyphenated?
+- [ ] Are `weight` (1-5) and `evidence` defined for the links?
 
-### 📄 Kaynak ve Doğrulama
-- Eklenen bilgilerin dayandığı açık kaynak / belge linkleri dosya gövdesine eklendi mi?
+### 🌐 Languages
+- [ ] If a UI language was added, does `_data/i18n/<code>.yml` contain every key of `en.yml`?
+
+### 📄 Sources and Verification
+- Were the open source / document links the information relies on added to the file body?

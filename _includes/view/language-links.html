@@ -1,0 +1,19 @@
+{% comment %}
+  Lists links to the other language versions of the current node or post.
+  Parameter: collection ("nodes" or "posts").
+  Files that translate another file declare `translation_of: <slug of the original>`.
+{% endcomment %}
+{% assign lang_base = page.translation_of | default: page.slug %}
+{% capture lang_links %}
+  {% for d in site[include.collection] %}
+    {% assign d_base = d.translation_of | default: d.slug %}
+    {% if d_base == lang_base and d.url != page.url %}
+      {% assign d_lang = d.lang | default: site.default_lang %}
+      <a href="{{ d.url | relative_url }}" class="lang-link" hreflang="{{ d_lang }}">{{ site.data.i18n[d_lang].language_name | default: d_lang }}</a>
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+{% assign lang_links = lang_links | strip %}
+{% if lang_links != "" %}
+  <div class="lang-links">{{ lang_links }}</div>
+{% endif %}

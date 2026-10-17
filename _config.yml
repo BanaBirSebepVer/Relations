@@ -1,23 +1,22 @@
-title: "Araştırmacı İlişki Ağı"
-description: "Açık Kaynak İlişki ve Ağ Haritalama Platformu"
-# Site GitHub Pages üzerinde /Relations alt dizininde yayınlanır.
-# Tüm CSS/JS/link yolları `relative_url` filtresiyle bu baseurl'e göre üretilir.
-# Yerelde: `bundle exec jekyll serve` -> http://localhost:4000/Relations/
-# (jekyll serve, `url` değerini otomatik olarak localhost ile değiştirir.)
-# Forkladıysanız baseurl'ü kendi depo adınıza göre güncelleyin (örn. "/BenimRepom").
+title: "Researcher Relationship Network"
+description: "Open Source Relationship and Network Mapping Platform"
+# The site is published under the /Relations sub-path on GitHub Pages.
+# All CSS/JS/link paths are built from this baseurl with the `relative_url` filter.
+# Locally: `bundle exec jekyll serve` -> http://localhost:4000/Relations/
+# If you forked the project, set baseurl to your own repository name (e.g. "/MyRepo").
 url: "https://banabirsebepver.github.io"
 baseurl: "/Relations"
 
-# Gelecek/güncel tarihli haberlerin (posts) derlenmeme sorununu çözer:
+# Build posts even if their date is in the future:
 future: true
 
-# Koleksiyon Yapılandırması
+# Collections
 collections:
   nodes:
     output: true
     permalink: /:name/
 
-# Varsayılan Şablon Atamaları
+# Default layouts
 defaults:
   - scope:
       path: ""
@@ -35,12 +34,11 @@ defaults:
 google_analytics: [G-JBKH0DKETF]
 enableDNT: true
 
-# If you want to generate website sitemap, you can set true
-# sitemap: false
-
-# If you want to change site language, you can set lang option
-lang: "tr"  # default lang is en
-lang_text: "Türkçe"  # default lang_text is English
+# Internationalization
+# UI strings live in `_data/i18n/<code>.yml`; every file there is offered in the
+# language switcher. `default_lang` is the fallback for missing translations and
+# the language assumed for content files that have no `lang` front matter.
+default_lang: "en"
 
 
 markdown: kramdown
@@ -57,5 +55,4 @@ exclude:
   - README.md
   - CONTRIBUTING.md
   - template.md
-  - tree.txt
   - vendor
