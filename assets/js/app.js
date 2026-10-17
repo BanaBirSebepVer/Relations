@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    // 3. Reciprocal relation map
+    // 3. Reciprocal relation map (A->B and B->A both declared)
     const relationKeys = new Set();
     rawEdges.forEach(e => {
       if (e && e.data) {
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    // 4. Process edges
+    // 4. Process edges. Visual options are resolved in edge-options.js
     let edgeCounter = 0;
     const finalEdges = [];
     rawEdges.forEach(e => {
@@ -100,29 +100,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       edgeCounter++;
       const src = String(e.data.source).trim();
       const tgt = String(e.data.target).trim();
-      const dir = e.data.direction;
-
-      let arrowShape = "triangle";
-      if (dir === "directed") {
-        arrowShape = "triangle";
-      } else if (dir === "none") {
-        arrowShape = "none";
-      } else if (dir === "mutual" || (dir === "auto" && relationKeys.has(`${tgt}->${src}`))) {
-        arrowShape = "none";
-      }
-
-      let lineStyle = (e.data.evidence === "alleged") ? "dashed" : "solid";
+      const rel = e.data.rel || {};
 
       finalEdges.push({
         data: {
           id: `e_${edgeCounter}_${src}_${tgt}`,
           source: src,
           target: tgt,
-          label: e.data.label || "",
-          weight: Number(e.data.weight) || 1,
-          color: e.data.edge_color || (cfg.edges && cfg.edges.default_color) || "#64748b",
-          targetArrowShape: arrowShape,
-          lineStyle: lineStyle
+          ...window.EdgeOptions.resolve(rel, {
+            edgeDefaults: cfg.edges,
+            isReciprocal: relationKeys.has(`${tgt}->${src}`)
+          })
         }
       });
     });
@@ -198,15 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
         {
           selector: "edge",
-          style: {
-            "width": "data(weight)",
-            "line-color": "data(color)",
-            "target-arrow-color": "data(color)",
-            "target-arrow-shape": "data(targetArrowShape)",
-            "curve-style": "bezier",
-            "line-style": "data(lineStyle)",
-            "opacity": 0.8
-          }
+          style: window.EdgeOptions.edgeStyle
         },
         {
           selector: ".dimmed",

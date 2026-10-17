@@ -49,5 +49,6 @@ type:
   fund: "Fon"
   organization: "Kurum"
   event: "Olay"
+  example: "Örnek"
   ghost: "Taslak"
   generic: "Genel"

@@ -30,9 +30,9 @@ defaults:
       layout: "post"
 
 
-# Google analytics - GA4
-google_analytics: [G-JBKH0DKETF]
-enableDNT: true
+# Google analytics - GA4 (set your own measurement ID; unused by the default templates)
+# google_analytics: [G-XXXXXXXXXX]
+# enableDNT: true
 
 # Internationalization
 # UI strings live in `_data/i18n/<code>.yml`; every file there is offered in the

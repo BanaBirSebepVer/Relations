@@ -61,13 +61,7 @@ permalink: /api/graph.json
               "data": {
                 "source": {{ node.slug | jsonify }},
                 "target": {{ t | jsonify }},
-                "label": {{ rel.type | default: "" | jsonify }},
-                "weight": {{ rel.weight | default: 1 | jsonify }},
-                "evidence": {{ rel.evidence | default: "documented" | jsonify }},
-                "direction": {{ rel.direction | default: "auto" | jsonify }},
-                "edge_color": {{ rel.edge_color | default: "" | jsonify }},
-                "start_date": {{ rel.start_date | default: "" | jsonify }},
-                "end_date": {{ rel.end_date | default: "" | jsonify }}
+                "rel": {{ rel | jsonify }}
               }
             }{% endcapture %}
             {% assign edge_list = edge_list | push: edge_item %}

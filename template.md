@@ -55,6 +55,12 @@ Archive records, indictment summaries and historical background can be written f
 - Related Trade Registry Gazette announcement
 
 <!--
+EDGE OPTIONS
+Besides the options above, every relation accepts the Cytoscape.js edge options
+(label, curve_style, line_style, source_arrow, target_arrow, mid_*_arrow, arrow_fill,
+arrow_scale, label_color, label_size, label_rotation, ...).
+Definitions: CONTRIBUTING.md, section "Edge Options". Examples: _nodes/examples/.
+
 TRANSLATIONS
 To translate this node, create `x-fund.<lang>.md` next to this file with only:
 

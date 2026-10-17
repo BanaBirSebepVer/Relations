@@ -58,5 +58,6 @@ type:
   fund: "Fund"
   organization: "Organization"
   event: "Event"
+  example: "Example"
   ghost: "Draft"
   generic: "Generic"
