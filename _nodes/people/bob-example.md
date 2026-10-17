@@ -17,6 +17,13 @@ relations:
     type: "speaker"
     weight: 1
     evidence: "documented"
+
+  - target: "alice-example"
+    type: "colleague"
+    label: "works with"
+    weight: 2
+    evidence: "documented"
+    direction: "mutual"
 ---
 
 ## Biography
